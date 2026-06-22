@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>智能复习 · 错题与变式题</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #2478ff;
+      --green: #16c985;
+      --red: #ff4b3e;
+      --ink: #121827;
+      --muted: #8a93a3;
+      --line: #edf1f6;
+      --bg: #f8faff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      width: 100%;
+      height: 100%;
+      background: #eef3fb;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
+        "Helvetica Neue", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background: #eef3fb;
+    }
+
+    button {
+      border: 0;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      background: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button:active { transform: scale(.98); }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      width: 393px;
+      height: 852px;
+      max-width: 100vw;
+      max-height: 100dvh;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 0 60px rgba(32, 50, 85, .14);
+    }
+
+    .demo-scenes {
+      position: fixed;
+      left: calc(50% + 212px);
+      top: max(0px, calc((100dvh - 852px) / 2));
+      z-index: 30;
+      display: grid;
+      gap: 7px;
+      width: 112px;
+      padding: 9px;
+      border: 1px solid #e1e7f1;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .95);
+      box-shadow: 0 10px 30px rgba(24, 45, 78, .12);
+    }
+
+    .demo-scenes > span { color: #667085; font-size: 11px; text-align: center; }
+    .scene-btn { height: 30px; border: 1px solid #dfe6f2; border-radius: 999px; color: #667085; background: #fff; font-size: 12px; font-weight: 650; }
+    .scene-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
+
+    .top {
+      flex: none;
+      background: rgba(255, 255, 255, .98);
+      box-shadow: 0 1px 0 var(--line);
+      z-index: 5;
+    }
+
+    .statusbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 44px;
+      padding: 6px 27px 0 31px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .status-icons { display: flex; align-items: center; gap: 8px; }
+    .cellular { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+    .cellular i { width: 3px; border-radius: 1px; background: #111; }
+    .cellular i:nth-child(1) { height: 4px; }
+    .cellular i:nth-child(2) { height: 6px; }
+    .cellular i:nth-child(3) { height: 9px; }
+    .cellular i:nth-child(4) { height: 12px; }
+
+    .wifi {
+      position: relative;
+      width: 15px;
+      height: 12px;
+      overflow: hidden;
+    }
+
+    .wifi::before,
+    .wifi::after {
+      position: absolute;
+      left: 50%;
+      border: 2px solid #111;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      content: "";
+    }
+
+    .wifi::before { top: 0; width: 13px; height: 13px; }
+    .wifi::after { top: 5px; width: 6px; height: 6px; }
+
+    .battery {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 23px;
+      height: 12px;
+      border: 1px solid #8f8f8f;
+      border-radius: 3px;
+      color: #fff;
+      background: #171717;
+      font-size: 8px;
+    }
+
+    .battery::after {
+      position: absolute;
+      right: -3px;
+      width: 2px;
+      height: 6px;
+      border-radius: 0 2px 2px 0;
+      background: #999;
+      content: "";
+    }
+
+    .navbar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 57px;
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 680;
+      letter-spacing: .5px;
+    }
+
+    .back,
+    .icon-btn {
+      position: absolute;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      transform: translateY(-50%);
+    }
+
+    .back { left: 11px; }
+    .timer { left: 51px; width: 72px; justify-content: start; color: #131a27; font-size: 13px; }
+    .star { right: 92px; }
+    .note { right: 50px; }
+    .more { right: 11px; }
+
+    .back::before {
+      width: 12px;
+      height: 12px;
+      border-left: 2px solid #111827;
+      border-bottom: 2px solid #111827;
+      transform: rotate(45deg);
+      content: "";
+    }
+
+    .timer-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 5px;
+      border: 2px solid #111827;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .timer-icon::before {
+      position: absolute;
+      left: 7px;
+      top: 3px;
+      width: 1.5px;
+      height: 6px;
+      background: #111827;
+      content: "";
+    }
+
+    .timer-icon::after {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      width: 5px;
+      height: 1.5px;
+      background: #111827;
+      transform: rotate(25deg);
+      transform-origin: left center;
+      content: "";
+    }
+
+    .star svg,
+    .note svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: #111827;
+      stroke-width: 2;
+    }
+
+    .more {
+      font-size: 24px;
+      letter-spacing: 2px;
+      color: #111827;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr 34px 1fr 34px 1fr;
+      align-items: center;
+      height: 61px;
+      padding: 0 28px;
+      color: #8e96a5;
+      font-size: 15px;
+    }
+
+    .step {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+      white-space: nowrap;
+    }
+
+    .step.active {
+      color: var(--blue);
+      font-weight: 650;
+    }
+
+    .step.active::after {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--blue);
+      content: "";
+    }
+
+    .step-dot {
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .step.done .step-dot {
+      background: #31c765;
+      font-size: 0;
+    }
+
+    .step.done .step-dot::before {
+      width: 10px;
+      height: 6px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg);
+      content: "";
+    }
+
+    .lock {
+      background: #b7bdc7;
+      font-size: 0;
+    }
+
+    .lock::before {
+      width: 8px;
+      height: 6px;
+      border: 2px solid #fff;
+      border-bottom: 0;
+      border-radius: 8px 8px 0 0;
+      content: "";
+    }
+
+    .connector { height: 1px; background: #dce1ea; }
+
+    .stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    .pager {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+
+    .pager::-webkit-scrollbar { display: none; }
+
+    .page {
+      flex: 0 0 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      scroll-snap-align: start;
+    }
+
+    .question-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 16px 17px 18px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .question-scroll::-webkit-scrollbar { display: none; }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #8992a2;
+      font-size: 14px;
+    }
+
+    .page-index {
+      color: var(--blue);
+      font-size: 16px;
+    }
+
+    .progress-line {
+      height: 4px;
+      margin: 14px 0 25px;
+      border-radius: 999px;
+      background: #edf1f7;
+      overflow: hidden;
+    }
+
+    .progress-line span {
+      display: block;
+      height: 100%;
+      width: var(--progress);
+      border-radius: inherit;
+      background: var(--blue);
+    }
+
+    .chips {
+      display: flex;
+      gap: 9px;
+      margin-bottom: 23px;
+    }
+
+    .chip {
+      padding: 5px 9px;
+      border-radius: 5px;
+      color: var(--blue);
+      background: #eef5ff;
+      font-size: 12px;
+    }
+
+    .chip.gray {
+      color: #687386;
+      background: #f1f3f7;
+    }
+
+    .question {
+      margin: 0 0 24px;
+      font-size: 15px;
+      line-height: 1.75;
+      font-weight: 620;
+      letter-spacing: .2px;
+    }
+
+    .options {
+      display: grid;
+      gap: 22px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 17px;
+      width: 100%;
+      text-align: left;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .option-letter {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid #c7ced9;
+      border-radius: 50%;
+      color: #151c2a;
+      background: #fff;
+      font-weight: 650;
+    }
+
+    .option.selected .option-letter {
+      border-color: var(--blue);
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 8px 18px rgba(36, 120, 255, .18);
+    }
+
+    .page.show-analysis .option.correct .option-letter {
+      border-color: var(--green);
+      background: var(--green);
+      color: #fff;
+    }
+
+    .page.show-analysis .option.wrong.selected .option-letter {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+    }
+
+    .analysis {
+      display: none;
+      margin: 28px -17px 0;
+      border-top: 8px solid #f5f7fa;
+      background: #fff;
+    }
+
+    .page.show-analysis .analysis { display: block; }
+
+    .answer-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 19px 17px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .answer-summary strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 16px;
+    }
+
+    .answer-summary span {
+      color: #8d96a5;
+      font-size: 11px;
+    }
+
+    .answer-summary .green { color: var(--green); }
+    .answer-summary .red { color: var(--red); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      margin: 0 17px 19px;
+      overflow: hidden;
+      border-radius: 5px;
+      background: #f2f4f8;
+    }
+
+    .stat {
+      padding: 12px 0 10px;
+      text-align: center;
+      background: #f8f9fb;
+    }
+
+    .stat strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+
+    .stat span {
+      color: #929aa8;
+      font-size: 11px;
+    }
+
+    .section {
+      position: relative;
+      padding: 0 17px 20px;
+    }
+
+    .section h2 {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 0 13px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .section h2::before {
+      position: absolute;
+      left: -17px;
+      width: 4px;
+      height: 16px;
+      border-radius: 0 2px 2px 0;
+      background: var(--blue);
+      content: "";
+    }
+
+    .vip {
+      display: inline-flex;
+      align-items: center;
+      height: 14px;
+      padding: 0 4px;
+      border-radius: 3px;
+      color: #8b5b03;
+      background: #ffd36c;
+      font-size: 9px;
+      font-style: italic;
+    }
+
+    .correction {
+      margin-left: auto;
+      padding: 5px 11px;
+      border: 1px solid #dbe2ee;
+      border-radius: 999px;
+      color: #6e7b91;
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .explain {
+      margin: 0;
+      color: #252c3a;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .related {
+      display: block;
+      padding: 9px 11px;
+      border: 1px solid #9fc1ff;
+      border-radius: 4px;
+      color: var(--blue);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .bottom {
+      flex: none;
+      padding: 13px 17px max(13px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, .98);
+    }
+
+    .bottom.is-hidden {
+      display: none;
+    }
+
+    .analysis-btn {
+      width: 100%;
+      height: 52px;
+      border-radius: 26px;
+      color: #fff;
+      background: linear-gradient(135deg, #287cff, #176bf3);
+      box-shadow: 0 8px 18px rgba(36, 120, 255, .18);
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .analysis-btn:disabled {
+      color: #a7b0bf;
+      background: #eef1f6;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .hint {
+      margin: 11px 0 0;
+      color: #8b94a3;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 82px;
+      z-index: 30;
+      padding: 9px 15px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(16, 21, 34, .9);
+      font-size: 12px;
+      transform: translate(-50%, 15px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (min-width: 430px), (min-height: 890px) {
+      .app { border-radius: 26px; }
+    }
+
+    @media (max-width: 392px) {
+      .app { width: 100vw; height: 100dvh; border-radius: 0; }
+      .demo-scenes { left: auto; right: 10px; top: auto; bottom: 12px; }
+    }
+
+    @media (min-width: 393px) and (max-height: 851px) {
+      .app { width: 393px; height: 100dvh; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="demo-scenes" aria-label="练习场景切换">
+    <span>Demo 场景</span>
+    <button class="scene-btn" data-scene="review">复习专区</button>
+    <button class="scene-btn" data-scene="flashcard">闪卡</button>
+    <button class="scene-btn active" data-scene="wrong">错题</button>
+    <button class="scene-btn" data-scene="variant">变式题</button>
+    <button class="scene-btn" data-scene="report">复习报告</button>
+  </aside>
+
+  <div class="app">
+    <header class="top">
+      <div class="statusbar">
+        <span>10:11</span>
+        <div class="status-icons" aria-hidden="true">
+          <span class="cellular"><i></i><i></i><i></i><i></i></span>
+          <span class="wifi"></span>
+          <span class="battery">56</span>
+        </div>
+      </div>
+      <div class="navbar">
+        <button class="back" aria-label="返回"></button>
+        <div class="icon-btn timer"><span class="timer-icon"></span><span id="timer">00:16</span></div>
+        <h1>智能复习</h1>
+        <button class="icon-btn star" aria-label="收藏">
+          <svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg>
+        </button>
+        <button class="icon-btn note" aria-label="笔记">
+          <svg viewBox="0 0 24 24"><path d="M6 4h10l2 2v14H6z"/><path d="M9 9h6M9 13h6M9 17h3M18 4v5h-5"/></svg>
+        </button>
+        <button class="icon-btn more" aria-label="更多">…</button>
+      </div>
+      <nav class="steps" aria-label="复习进度">
+        <div class="step done"><span class="step-dot">1</span><span>闪卡</span></div>
+        <span class="connector"></span>
+        <div class="step active" data-step="wrong"><span class="step-dot">2</span><span>错题</span></div>
+        <span class="connector"></span>
+        <div class="step" data-step="variant"><span class="step-dot lock">3</span><span>变式题</span></div>
+      </nav>
+    </header>
+
+    <main class="stage">
+      <div class="pager" id="pager">
+        <section class="page" data-type="wrong" data-answer="C" data-correct="C">
+          <div class="question-scroll">
+            <div class="meta-row"><span>第1篇 工程经济</span><span class="page-index">1/5</span></div>
+            <div class="progress-line" style="--progress: 20%"><span></span></div>
+            <div class="chips"><span class="chip">单项选择题</span><span class="chip gray">原题乱序</span></div>
+            <h2 class="question">某企业拟进行资金时间价值计算，关于现值与终值换算的说法，正确的是（ ）。</h2>
+            <div class="options">
+              <button class="option" data-option="A"><span class="option-letter">A</span><span>现值一定大于终值</span></button>
+              <button class="option" data-option="B"><span class="option-letter">B</span><span>终值与利率无关</span></button>
+              <button class="option correct" data-option="C"><span class="option-letter">C</span><span>终值等于现值乘以复利系数</span></button>
+              <button class="option" data-option="D"><span class="option-letter">D</span><span>期数变化不影响换算结果</span></button>
+            </div>
+
+            <div class="analysis">
+              <div class="answer-summary">
+                <div><strong class="green">C</strong><span>正确答案</span></div>
+                <div><strong class="selected-answer">—</strong><span>我的答案</span></div>
+                <div><strong>C</strong><span>易错项</span></div>
+              </div>
+              <div class="stats">
+                <div class="stat"><strong>1次</strong><span>已做</span></div>
+                <div class="stat"><strong class="done-right">—</strong><span>做对</span></div>
+                <div class="stat"><strong class="accuracy">—%</strong><span>正确率</span></div>
+                <div class="stat"><strong>89%</strong><span>全站正确率</span></div>
+              </div>
+              <section class="section">
+                <h2>试题解析 <span class="vip">VIP</span><button class="correction">我要纠错</button></h2>
+                <p class="explain">终值与现值的换算要考虑资金的时间价值。终值公式为 <strong>F=P(1+i)^n</strong>，即终值等于现值乘以复利系数。选项 A、B、D 均忽略了利率或期数对换算结果的影响，所以选择 C 选项。</p>
+              </section>
+              <section class="section">
+                <h2>相关考点</h2>
+                <span class="related">资金时间价值计算基础（P269-P269）</span>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-type="variant" data-answer="B" data-correct="B">
+          <div class="question-scroll">
+            <div class="meta-row"><span>第1篇 工程经济</span><span class="page-index">1/3</span></div>
+            <div class="progress-line" style="--progress: 33%"><span></span></div>
+            <div class="chips"><span class="chip">单项选择题</span><span class="chip">变式题</span></div>
+            <h2 class="question">某项目期初投入100万元，年利率为5%，按复利计算，2年后的终值最接近（ ）。</h2>
+            <div class="options">
+              <button class="option" data-option="A"><span class="option-letter">A</span><span>105万元</span></button>
+              <button class="option correct" data-option="B"><span class="option-letter">B</span><span>110.25万元</span></button>
+              <button class="option" data-option="C"><span class="option-letter">C</span><span>115万元</span></button>
+              <button class="option" data-option="D"><span class="option-letter">D</span><span>120.5万元</span></button>
+            </div>
+
+            <div class="analysis">
+              <div class="answer-summary">
+                <div><strong class="green">B</strong><span>正确答案</span></div>
+                <div><strong class="selected-answer">—</strong><span>我的答案</span></div>
+                <div><strong>C</strong><span>易错项</span></div>
+              </div>
+              <div class="stats">
+                <div class="stat"><strong>1次</strong><span>已做</span></div>
+                <div class="stat"><strong class="done-right">—</strong><span>做对</span></div>
+                <div class="stat"><strong class="accuracy">—%</strong><span>正确率</span></div>
+                <div class="stat"><strong>84%</strong><span>全站正确率</span></div>
+              </div>
+              <section class="section">
+                <h2>试题解析 <span class="vip">VIP</span><button class="correction">我要纠错</button></h2>
+                <p class="explain">按复利计算终值：<strong>F=P(1+i)^n</strong>。本题 P=100，i=5%，n=2，所以 F=100×(1+5%)²=110.25 万元。因此选择 B 选项。</p>
+              </section>
+              <section class="section">
+                <h2>相关考点</h2>
+                <span class="related">现值与终值换算（P269-P270）</span>
+              </section>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="bottom">
+        <button class="analysis-btn" id="analysisBtn" disabled>查看解析</button>
+        <p class="hint" id="hint">未作答也可左右滑动进入变式题</p>
+      </div>
+    </main>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    const pager = document.querySelector("#pager");
+    const pages = [...document.querySelectorAll(".page")];
+    const analysisBtn = document.querySelector("#analysisBtn");
+    const hint = document.querySelector("#hint");
+    const toast = document.querySelector("#toast");
+    const query = new URLSearchParams(location.search);
+    const pointIndex = query.get("point") || "1";
+    const pointName = query.get("name") || "资金时间价值计算基础";
+    let currentIndex = 0;
+    let toastTimer;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    function currentPage() {
+      return pages[currentIndex];
+    }
+
+    function updateTopState() {
+      const isVariant = currentPage().dataset.type === "variant";
+      document.querySelectorAll(".scene-btn").forEach((button) => {
+        button.classList.toggle("active", button.dataset.scene === (isVariant ? "variant" : "wrong"));
+      });
+      document.querySelector('[data-step="wrong"]').classList.toggle("active", !isVariant);
+      document.querySelector('[data-step="wrong"]').classList.toggle("done", isVariant);
+      const variant = document.querySelector('[data-step="variant"]');
+      variant.classList.toggle("active", isVariant);
+      variant.querySelector(".step-dot").classList.toggle("lock", !isVariant);
+      variant.querySelector(".step-dot").textContent = "3";
+      document.querySelector("#timer").textContent = isVariant ? "00:18" : "00:16";
+    }
+
+    function updateButton() {
+      const page = currentPage();
+      const answered = Boolean(page.dataset.selected);
+      const shown = page.classList.contains("show-analysis");
+      document.querySelector(".bottom").classList.toggle("is-hidden", shown);
+      analysisBtn.disabled = !answered;
+      analysisBtn.textContent = shown ? "已查看解析" : "查看解析";
+      hint.textContent = answered
+        ? "选择后可查看本题解析"
+        : (page.dataset.type === "wrong" ? "未作答也可左右滑动进入变式题" : "本题用于验证考点迁移应用");
+    }
+
+    function updateCurrentFromScroll() {
+      const nextIndex = Math.round(pager.scrollLeft / pager.clientWidth);
+      if (nextIndex !== currentIndex) {
+        currentIndex = nextIndex;
+        updateTopState();
+        updateButton();
+      }
+    }
+
+    pager.addEventListener("scroll", () => {
+      window.clearTimeout(pager._timer);
+      pager._timer = window.setTimeout(updateCurrentFromScroll, 60);
+    });
+
+    function goToPage(index) {
+      currentIndex = Math.max(0, Math.min(index, pages.length - 1));
+      pager.scrollTo({ left: currentIndex * pager.clientWidth, behavior: "smooth" });
+      updateTopState();
+      updateButton();
+    }
+
+    pager.addEventListener("pointerdown", (event) => {
+      dragStartX = event.clientX;
+      dragStartY = event.clientY;
+    });
+
+    pager.addEventListener("pointerup", (event) => {
+      const dx = event.clientX - dragStartX;
+      const dy = event.clientY - dragStartY;
+      if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) {
+        goToPage(currentIndex + (dx < 0 ? 1 : -1));
+      }
+    });
+
+    pages.forEach((page) => {
+      page.querySelectorAll(".option").forEach((option) => {
+        option.addEventListener("click", () => {
+          page.dataset.selected = option.dataset.option;
+          page.querySelectorAll(".option").forEach((item) => item.classList.remove("selected", "wrong"));
+          option.classList.add("selected");
+          if (option.dataset.option !== page.dataset.correct) option.classList.add("wrong");
+          const selectedAnswer = page.querySelector(".selected-answer");
+          selectedAnswer.textContent = option.dataset.option;
+          selectedAnswer.classList.toggle("red", option.dataset.option !== page.dataset.correct);
+          selectedAnswer.classList.toggle("green", option.dataset.option === page.dataset.correct);
+          page.querySelector(".done-right").textContent = option.dataset.option === page.dataset.correct ? "1次" : "0次";
+          page.querySelector(".accuracy").textContent = option.dataset.option === page.dataset.correct ? "100%" : "—%";
+          updateButton();
+        });
+      });
+    });
+
+    analysisBtn.addEventListener("click", () => {
+      const page = currentPage();
+      if (!page.dataset.selected) {
+        showToast("先选择一个答案");
+        return;
+      }
+      page.classList.add("show-analysis");
+      updateButton();
+      page.querySelector(".analysis").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    document.querySelector(".back").addEventListener("click", () => showToast("返回上一页"));
+    document.querySelectorAll(".scene-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const params = `point=${pointIndex}&name=${encodeURIComponent(pointName)}`;
+        if (button.dataset.scene === "review") {
+          location.href = "03_考点推荐_demo.html";
+        } else if (button.dataset.scene === "flashcard") {
+          location.href = `04_闪卡_demo.html?${params}`;
+        } else if (button.dataset.scene === "wrong") {
+          goToPage(0);
+        } else if (button.dataset.scene === "variant") {
+          goToPage(1);
+        } else {
+          location.href = `07_答题报告_demo.html?${params}`;
+        }
+      });
+    });
+    updateTopState();
+    updateButton();
+
+    if (query.get("start") === "variant") {
+      requestAnimationFrame(() => goToPage(1));
+    }
+  </script>
+</body>
+</html>

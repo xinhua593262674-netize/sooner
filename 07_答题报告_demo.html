@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>答题报告 Demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #287cff;
+      --blue-dark: #176bf2;
+      --green: #17c987;
+      --red: #ff4b3b;
+      --orange: #ff5b23;
+      --ink: #151c2a;
+      --muted: #8a93a2;
+      --line: #edf1f6;
+      --page: #f5f7fb;
+      --progress: .4;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      width: 100%;
+      height: 100%;
+      background: #eef3fb;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
+        "Helvetica Neue", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background: #eef3fb;
+    }
+
+    button {
+      border: 0;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      background: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button:active { transform: scale(.98); }
+
+    .app {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 393px;
+      height: 852px;
+      max-width: 100vw;
+      max-height: 100dvh;
+      overflow: hidden;
+      background: var(--page);
+      box-shadow: 0 0 60px rgba(32, 50, 85, .14);
+    }
+
+    .demo-scenes {
+      position: fixed;
+      left: calc(50% + 212px);
+      top: max(0px, calc((100dvh - 852px) / 2));
+      z-index: 30;
+      display: grid;
+      gap: 7px;
+      width: 112px;
+      padding: 9px;
+      border: 1px solid #e1e7f1;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .95);
+      box-shadow: 0 10px 30px rgba(24, 45, 78, .12);
+    }
+
+    .demo-scenes > span { color: #667085; font-size: 11px; text-align: center; }
+    .scene-btn { height: 30px; border: 1px solid #dfe6f2; border-radius: 999px; color: #667085; background: #fff; font-size: 12px; font-weight: 650; }
+    .scene-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
+
+    .statusbar {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 44px;
+      padding: 6px 27px 0 31px;
+      background: #fff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .cellular {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+    }
+
+    .cellular i {
+      width: 3px;
+      border-radius: 1px;
+      background: #111;
+    }
+
+    .cellular i:nth-child(1) { height: 4px; }
+    .cellular i:nth-child(2) { height: 6px; }
+    .cellular i:nth-child(3) { height: 9px; }
+    .cellular i:nth-child(4) { height: 12px; }
+
+    .wifi {
+      position: relative;
+      width: 15px;
+      height: 12px;
+      overflow: hidden;
+    }
+
+    .wifi::before,
+    .wifi::after {
+      position: absolute;
+      left: 50%;
+      border: 2px solid #111;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      content: "";
+    }
+
+    .wifi::before { top: 0; width: 13px; height: 13px; }
+    .wifi::after { top: 5px; width: 6px; height: 6px; }
+
+    .network {
+      color: #111;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .battery {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 23px;
+      height: 12px;
+      border: 1px solid #8f8f8f;
+      border-radius: 3px;
+      color: #fff;
+      background: #171717;
+      font-size: 8px;
+    }
+
+    .battery::after {
+      position: absolute;
+      right: -3px;
+      width: 2px;
+      height: 6px;
+      border-radius: 0 2px 2px 0;
+      background: #999;
+      content: "";
+    }
+
+    .navbar {
+      position: relative;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 58px;
+      background: #fff;
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 680;
+      letter-spacing: .3px;
+    }
+
+    .back {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      width: 38px;
+      height: 38px;
+      transform: translateY(-50%);
+    }
+
+    .back::before {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      width: 12px;
+      height: 12px;
+      border-left: 2px solid #111827;
+      border-bottom: 2px solid #111827;
+      transform: rotate(45deg);
+      content: "";
+    }
+
+    .content {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0 12px 126px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .content::-webkit-scrollbar { display: none; }
+
+    .summary-card {
+      min-height: 236px;
+      margin: 0 -12px 12px;
+      padding: 4px 27px 18px;
+      border-radius: 0 0 12px 12px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .gauge {
+      position: relative;
+      width: 210px;
+      height: 112px;
+      margin: 2px auto 15px;
+    }
+
+    .gauge svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .gauge-track,
+    .gauge-value {
+      fill: none;
+      stroke-linecap: round;
+      stroke-width: 14;
+    }
+
+    .gauge-track { stroke: #edf3ff; }
+    .gauge-value { stroke: var(--blue); stroke-dasharray: 156 260; }
+
+    .gauge-dot {
+      position: absolute;
+      left: calc(35px + (150px * var(--progress)));
+      top: calc(92px - (72px * sin(3.1416 * var(--progress))));
+      width: 16px;
+      height: 16px;
+      border: 4px solid #fff;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 2px 7px rgba(40, 124, 255, .28);
+      transform: translate(-50%, -50%);
+    }
+
+    @supports not (top: calc(1px * sin(1))) {
+      .gauge-dot { left: 95px; top: 24px; }
+      .app.mastered .gauge-dot { left: 185px; top: 92px; }
+    }
+
+    .gauge-text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 55px;
+      text-align: center;
+    }
+
+    .gauge-text > span {
+      display: block;
+      margin-bottom: 7px;
+      color: #9aa2ae;
+      font-size: 13px;
+    }
+
+    .gauge-text strong {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .gauge-text small {
+      margin-left: 2px;
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .metric {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      height: 55px;
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    .metric.green { background: #eafaf6; }
+    .metric.orange { background: #fff6ea; }
+
+    .metric-icon {
+      display: grid;
+      place-items: center;
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .metric.green .metric-icon { background: var(--green); }
+    .metric.orange .metric-icon { background: #ffbc42; }
+
+    .metric strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1.05;
+    }
+
+    .metric span {
+      color: #8f98a6;
+      font-size: 12px;
+    }
+
+    .conclusion {
+      margin: 13px 0 0;
+      padding: 11px 12px;
+      border-radius: 8px;
+      color: #f05a25;
+      background: #fff4ed;
+      font-size: 14px;
+      font-weight: 650;
+      text-align: center;
+    }
+
+    .app.mastered .conclusion {
+      color: #14a84f;
+      background: #ecfaef;
+    }
+
+    .detail-card {
+      margin: 0 0 14px;
+      padding: 21px 15px 26px;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .detail-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .detail-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      color: #8b94a3;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      margin-right: 3px;
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+
+    .legend .green { background: var(--green); }
+    .legend .red { background: var(--red); }
+    .legend .empty {
+      border: 1px solid #dfe4ec;
+      background: #fff;
+    }
+
+    .objective {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 32px;
+      margin-bottom: 21px;
+      padding: 0 12px;
+      border-radius: 4px;
+      background: #f7f8fa;
+      font-size: 12px;
+    }
+
+    .objective strong {
+      font-weight: 700;
+    }
+
+    .objective span {
+      color: #6f7787;
+    }
+
+    .objective i {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin: 0 3px 0 10px;
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+
+    .objective .green { background: var(--green); }
+    .objective .red { background: var(--red); }
+
+    .question-group {
+      margin-bottom: 24px;
+    }
+
+    .question-group:last-child { margin-bottom: 0; }
+
+    .question-group h3 {
+      margin: 0 0 16px;
+      color: #222a38;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .question-dots {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      border: 1px solid #e2e6ed;
+      border-radius: 50%;
+      color: #1d2533;
+      background: #fff;
+      font-size: 18px;
+      box-shadow: 0 2px 7px rgba(36, 45, 66, .03);
+    }
+
+    .dot.wrong {
+      border-color: var(--red);
+      color: #fff;
+      background: var(--red);
+      box-shadow: 0 8px 18px rgba(255, 75, 59, .16);
+    }
+
+    .dot.correct {
+      border-color: var(--green);
+      color: #fff;
+      background: var(--green);
+      box-shadow: 0 8px 18px rgba(23, 201, 135, .16);
+    }
+
+    .bottom-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 8;
+      padding: 11px 16px max(10px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, .98);
+      box-shadow: 0 -6px 24px rgba(30, 47, 76, .04);
+    }
+
+    .next-tip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 9px;
+      color: #202839;
+      font-size: 14px;
+    }
+
+    .next-tip a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 650;
+    }
+
+    .next-tip::after {
+      width: 7px;
+      height: 7px;
+      border-top: 1.5px solid var(--blue);
+      border-right: 1.5px solid var(--blue);
+      transform: rotate(45deg);
+      content: "";
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .action {
+      height: 48px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .action.secondary {
+      border: 1px solid var(--orange);
+      color: var(--orange);
+      background: #fff;
+    }
+
+    .action.primary {
+      color: #fff;
+      background: linear-gradient(135deg, #287cff, #176bf2);
+      box-shadow: 0 8px 18px rgba(36, 120, 255, .2);
+    }
+
+    .app.mastered {
+      --progress: 1;
+    }
+
+    .app.mastered .gauge-value {
+      stroke: var(--green);
+      stroke-dasharray: 260 260;
+    }
+
+    .app.mastered .gauge-dot {
+      background: var(--green);
+      box-shadow: 0 2px 7px rgba(23, 201, 135, .28);
+    }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 104px;
+      z-index: 20;
+      padding: 9px 15px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(16, 21, 34, .9);
+      font-size: 12px;
+      transform: translate(-50%, 15px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    @media (min-width: 430px), (min-height: 890px) {
+      .app { border-radius: 26px; }
+    }
+
+    @media (max-width: 392px) {
+      .app { width: 100vw; height: 100dvh; border-radius: 0; }
+      .demo-scenes { left: auto; right: 10px; top: auto; bottom: 12px; }
+    }
+
+    @media (min-width: 393px) and (max-height: 851px) {
+      .app { width: 393px; height: 100dvh; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="demo-scenes" aria-label="练习场景切换">
+    <span>Demo 场景</span>
+    <button class="scene-btn" data-scene="review">复习专区</button>
+    <button class="scene-btn" data-scene="flashcard">闪卡</button>
+    <button class="scene-btn" data-scene="wrong">错题</button>
+    <button class="scene-btn" data-scene="variant">变式题</button>
+    <button class="scene-btn active" data-scene="report">复习报告</button>
+  </aside>
+
+  <div class="app">
+    <div class="statusbar">
+      <span>15:08</span>
+      <div class="status-icons" aria-hidden="true">
+        <span class="cellular"><i></i><i></i><i></i><i></i></span>
+        <span class="network">5G</span>
+        <span class="battery">43</span>
+      </div>
+    </div>
+
+    <header class="navbar">
+      <button class="back" aria-label="返回"></button>
+      <h1>答题报告</h1>
+    </header>
+
+    <main class="content">
+      <section class="summary-card">
+        <div class="gauge">
+          <svg viewBox="0 0 220 120" aria-hidden="true">
+            <path class="gauge-track" d="M35 92 A78 78 0 0 1 185 92"></path>
+            <path class="gauge-value" d="M35 92 A78 78 0 0 1 185 92"></path>
+          </svg>
+          <span class="gauge-dot" aria-hidden="true"></span>
+          <div class="gauge-text">
+            <span>答题数据</span>
+            <strong><span data-field="score">2</span><small>/5</small></strong>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric green">
+            <span class="metric-icon">✓</span>
+            <div><strong data-field="rate">0%</strong><span>正确率</span></div>
+          </div>
+          <div class="metric orange">
+            <span class="metric-icon">⌚</span>
+            <div><strong>00:47</strong><span>作答用时</span></div>
+          </div>
+        </div>
+
+        <div class="conclusion" data-field="conclusion">建议重新练习本考点</div>
+      </section>
+
+      <section class="detail-card">
+        <div class="detail-head">
+          <h2>答题情况</h2>
+          <div class="legend">
+            <span><i class="green"></i>答对</span>
+            <span><i class="red"></i>答错</span>
+            <span><i class="empty"></i>未答</span>
+          </div>
+        </div>
+
+        <div class="objective">
+          <strong>客观题数据</strong>
+          <span><i class="green"></i>答对：<span data-field="rightCount">0</span> <i class="red"></i>答错：<span data-field="wrongCount">2</span></span>
+        </div>
+
+        <div class="question-group">
+          <h3>单项选择题</h3>
+          <div class="question-dots">
+            <button class="dot wrong" data-question="1">1</button>
+            <button class="dot wrong" data-question="2">2</button>
+            <button class="dot" data-question="3">3</button>
+          </div>
+        </div>
+
+        <div class="question-group">
+          <h3>多项选择题</h3>
+          <div class="question-dots">
+            <button class="dot" data-question="4">4</button>
+          </div>
+        </div>
+
+        <div class="question-group">
+          <h3>案例分析题</h3>
+          <div class="question-dots">
+            <button class="dot" data-question="5">5</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bottom-bar">
+      <div class="next-tip">下一个推荐考点：<a href="#">道路结构组成</a></div>
+      <div class="actions">
+        <button class="action secondary" data-action="retry">重新练习本考点</button>
+        <button class="action primary" data-action="next">练习下一个考点</button>
+      </div>
+    </footer>
+
+    <div class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const app = document.querySelector(".app");
+    const toast = document.querySelector(".toast");
+    const dots = document.querySelectorAll(".dot");
+    const query = new URLSearchParams(location.search);
+    const pointIndex = query.get("point") || "1";
+    const pointName = query.get("name") || "资金时间价值计算基础";
+    let toastTimer;
+
+    const states = {
+      retry: {
+        mastered: false,
+        score: "2",
+        rate: "0%",
+        rightCount: "0",
+        wrongCount: "2",
+        wrongDots: ["1", "2"],
+        rightDots: [],
+        conclusion: "建议重新练习本考点",
+        retryLabel: "重新练习本考点",
+        nextLabel: "练习下一个考点",
+        retryToast: "重新开始本考点练习",
+        nextToast: "进入道路结构组成"
+      },
+      mastered: {
+        mastered: true,
+        score: "5",
+        rate: "100%",
+        rightCount: "5",
+        wrongCount: "0",
+        wrongDots: [],
+        rightDots: ["1", "2", "3", "4", "5"],
+        conclusion: "本考点已掌握",
+        retryLabel: "重新练习本考点",
+        nextLabel: "练习下一个考点",
+        retryToast: "再次巩固本考点",
+        nextToast: "进入道路结构组成"
+      }
+    };
+
+    let currentState = "retry";
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    function setState(name) {
+      currentState = name;
+      const data = states[name];
+      if (data.mastered) {
+        try {
+          localStorage.setItem("reviewFirstPointMastered", "true");
+        } catch {
+          // file:// 环境禁用本地存储时，仅展示当前报告状态。
+        }
+      }
+      app.classList.toggle("mastered", data.mastered);
+      document.querySelector('[data-field="score"]').textContent = data.score;
+      document.querySelector('[data-field="rate"]').textContent = data.rate;
+      document.querySelector('[data-field="rightCount"]').textContent = data.rightCount;
+      document.querySelector('[data-field="wrongCount"]').textContent = data.wrongCount;
+      document.querySelector('[data-field="conclusion"]').textContent = data.conclusion;
+      document.querySelector('[data-action="retry"]').textContent = data.retryLabel;
+      document.querySelector('[data-action="next"]').textContent = data.nextLabel;
+
+      dots.forEach((dot) => {
+        dot.classList.toggle("wrong", data.wrongDots.includes(dot.dataset.question));
+        dot.classList.toggle("correct", data.rightDots.includes(dot.dataset.question));
+      });
+
+    }
+
+    document.querySelector(".back").addEventListener("click", () => showToast("返回上一页"));
+    document.querySelectorAll(".scene-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const params = `point=${pointIndex}&name=${encodeURIComponent(pointName)}`;
+        if (button.dataset.scene === "review") {
+          location.href = "03_考点推荐_demo.html";
+        } else if (button.dataset.scene === "flashcard") {
+          location.href = `04_闪卡_demo.html?${params}`;
+        } else if (button.dataset.scene === "wrong") {
+          location.href = `05_错题_06_变式题_demo.html?${params}`;
+        } else if (button.dataset.scene === "variant") {
+          location.href = `05_错题_06_变式题_demo.html?${params}&start=variant`;
+        }
+      });
+    });
+    document.querySelector('[data-action="retry"]').addEventListener("click", () => showToast(states[currentState].retryToast));
+    document.querySelector('[data-action="next"]').addEventListener("click", () => showToast(states[currentState].nextToast));
+    document.querySelectorAll(".dot").forEach((dot) => {
+      dot.addEventListener("click", () => showToast(`查看第 ${dot.dataset.question} 题解析`));
+    });
+    setState(query.get("state") === "mastered" ? "mastered" : "retry");
+  </script>
+</body>
+</html>
