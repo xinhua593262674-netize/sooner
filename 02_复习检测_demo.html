@@ -112,6 +112,30 @@
       transform: rotate(45deg);
       content: "";
     }
+    .subject-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 48px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .subject-tab {
+      position: relative;
+      color: #6d778b;
+      font-size: 14px;
+    }
+    .subject-tab.active { color: var(--ink); font-weight: 700; }
+    .subject-tab.active::after {
+      position: absolute;
+      left: 50%;
+      bottom: 5px;
+      width: 20px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--blue);
+      transform: translateX(-50%);
+      content: "";
+    }
     main {
       flex: 1;
       min-height: 0;
@@ -295,6 +319,12 @@
         <div class="status-icons"><span class="cellular"><i></i><i></i><i></i><i></i></span><span class="wifi">⌁</span><span class="battery">56</span></div>
       </div>
       <div class="navbar"><button class="back" aria-label="返回"></button><h1>学情检测</h1></div>
+      <nav class="subject-tabs" aria-label="科目">
+        <button class="subject-tab active" data-subject="practice">建筑实务</button>
+        <button class="subject-tab" data-subject="law">法规</button>
+        <button class="subject-tab" data-subject="economy">经济</button>
+        <button class="subject-tab" data-subject="management">管理</button>
+      </nav>
     </header>
 
     <main>
@@ -302,8 +332,8 @@
         <div class="hero">
           <div class="scan-icon">◎</div>
           <h2>已完成你的错题分析</h2>
-          <p>依据经济科目全平台历史做题记录生成</p>
-          <span class="data-chip">已分析 36 道错题 · 覆盖 12 个考点</span>
+          <p data-role="history-source">依据建筑实务科目全平台历史做题记录生成</p>
+          <span class="data-chip" data-role="history-count">已分析 42 道错题 · 覆盖 15 个考点</span>
         </div>
 
         <section class="card">
@@ -315,26 +345,17 @@
               <polygon class="grid" points="95,64 120,82 110,111 80,111 70,82"/>
               <line class="axis" x1="95" y1="89" x2="95" y2="20"/><line class="axis" x1="95" y1="89" x2="158" y2="66"/>
               <line class="axis" x1="95" y1="89" x2="134" y2="141"/><line class="axis" x1="95" y1="89" x2="56" y2="141"/><line class="axis" x1="95" y1="89" x2="32" y2="66"/>
-              <polygon class="area" points="95,39 134,76 113,113 73,119 47,73"/>
-              <circle cx="95" cy="39" r="3"/><circle cx="134" cy="76" r="3"/><circle cx="113" cy="113" r="3"/><circle cx="73" cy="119" r="3"/><circle cx="47" cy="73" r="3"/>
-              <text x="78" y="13">工程经济</text><text x="158" y="64">工程财务</text><text x="132" y="156">工程计价</text><text x="20" y="157">历年真题</text><text x="0" y="64">综合应用</text>
+              <polygon class="area" data-role="radar-area" points="95,39 134,76 113,113 73,119 47,73"/>
+              <g data-role="radar-points"><circle cx="95" cy="39" r="3"/><circle cx="134" cy="76" r="3"/><circle cx="113" cy="113" r="3"/><circle cx="73" cy="119" r="3"/><circle cx="47" cy="73" r="3"/></g>
+              <text x="78" y="13" data-radar-label="0">建筑技术</text><text x="158" y="64" data-radar-label="1">法规标准</text><text x="132" y="156" data-radar-label="2">项目管理</text><text x="20" y="157" data-radar-label="3">案例实务</text><text x="0" y="64" data-radar-label="4">历年真题</text>
             </svg>
-            <div class="radar-score">
-              <div><span>工程经济</span><strong>72%</strong></div>
-              <div><span>工程财务</span><strong>61%</strong></div>
-              <div class="weak"><span>工程计价</span><strong>43%</strong></div>
-              <div class="weak"><span>历年真题</span><strong>38%</strong></div>
-            </div>
+            <div class="radar-score" data-role="radar-scores"></div>
           </div>
         </section>
 
         <section class="card">
           <div class="card-title"><h3>优先补强的考点</h3><span>综合错题与考点价值</span></div>
-          <div class="point-list">
-            <div class="point"><b>1</b><div><h4>资金时间价值计算基础</h4><p>6 道错题 · 公式记忆不准</p></div><em>重点</em></div>
-            <div class="point"><b>2</b><div><h4>现值与终值换算</h4><p>4 道错题 · 计算公式混淆</p></div><em>薄弱</em></div>
-            <div class="point"><b>3</b><div><h4>经济效果评价指标</h4><p>5 道错题 · 指标适用混淆</p></div><em>薄弱</em></div>
-          </div>
+          <div class="point-list" data-role="weak-points"></div>
         </section>
       </section>
 
@@ -349,11 +370,7 @@
         <div class="tip"><span>💡</span><span>当前先依据考试频率和考点价值，为你准备少量优先考点，不用盲目刷题。</span></div>
         <section class="card">
           <div class="card-title"><h3>建议先练这 3 个考点</h3><span>高频 · 高价值</span></div>
-          <div class="point-list">
-            <div class="point"><b>1</b><div><h4>资金时间价值计算基础</h4><p>第 1 篇 / 第 1 章 · 历年高频</p></div><em>高频</em></div>
-            <div class="point"><b>2</b><div><h4>现值与终值换算</h4><p>第 1 篇 / 第 1 章 · 公式必考</p></div><em>高频</em></div>
-            <div class="point"><b>3</b><div><h4>经济效果评价指标</h4><p>第 1 篇 / 第 2 章 · 易混考点</p></div><em>重点</em></div>
-          </div>
+          <div class="point-list" data-role="priority-points"></div>
         </section>
         <section class="card">
           <div class="card-title"><h3>怎样获得个性化推荐？</h3></div>
@@ -375,6 +392,69 @@
   <script>
     const app = document.querySelector(".app");
     const toast = document.querySelector(".toast");
+    const subjectData = {
+      practice: {
+        name: "建筑实务", wrong: 42, covered: 15,
+        labels: ["建筑技术", "法规标准", "项目管理", "案例实务", "历年真题"],
+        scores: [76, 64, 49, 41, 55],
+        weak: [
+          ["建筑构造与抗震要求", "7 道错题 · 构造要求混淆", "重点"],
+          ["混凝土结构施工技术", "5 道错题 · 工序记忆不准", "薄弱"],
+          ["施工现场安全管理", "4 道错题 · 案例判断易错", "薄弱"]
+        ],
+        priority: [
+          ["建筑构造与抗震要求", "第 1 篇 / 第 1 章 · 历年高频", "高频"],
+          ["混凝土结构施工技术", "第 1 篇 / 第 2 章 · 施工必考", "高频"],
+          ["施工项目合同管理", "第 3 篇 / 第 2 章 · 案例重点", "重点"]
+        ]
+      },
+      law: {
+        name: "法规", wrong: 31, covered: 11,
+        labels: ["基本法律", "许可制度", "合同制度", "安全法规", "质量法规"],
+        scores: [81, 68, 52, 45, 63],
+        weak: [
+          ["建设工程合同履行", "6 道错题 · 责任边界混淆", "重点"],
+          ["安全生产责任制度", "5 道错题 · 主体责任易错", "薄弱"],
+          ["施工许可证制度", "3 道错题 · 时间条件混淆", "薄弱"]
+        ],
+        priority: [
+          ["建设工程合同制度", "第 4 章 · 历年高频", "高频"],
+          ["安全生产责任制度", "第 6 章 · 高频易错", "高频"],
+          ["施工许可证制度", "第 2 章 · 基础必考", "重点"]
+        ]
+      },
+      economy: {
+        name: "经济", wrong: 36, covered: 12,
+        labels: ["工程经济", "工程财务", "工程计价", "历年真题", "综合应用"],
+        scores: [72, 61, 43, 38, 67],
+        weak: [
+          ["资金时间价值计算基础", "6 道错题 · 公式记忆不准", "重点"],
+          ["现值与终值换算", "4 道错题 · 计算公式混淆", "薄弱"],
+          ["经济效果评价指标", "5 道错题 · 指标适用混淆", "薄弱"]
+        ],
+        priority: [
+          ["资金时间价值计算基础", "第 1 篇 / 第 1 章 · 历年高频", "高频"],
+          ["现值与终值换算", "第 1 篇 / 第 1 章 · 公式必考", "高频"],
+          ["经济效果评价指标", "第 1 篇 / 第 2 章 · 易混考点", "重点"]
+        ]
+      },
+      management: {
+        name: "管理", wrong: 28, covered: 10,
+        labels: ["组织管理", "成本管理", "进度管理", "质量管理", "合同管理"],
+        scores: [70, 56, 48, 74, 42],
+        weak: [
+          ["施工进度计划调整", "5 道错题 · 逻辑关系混淆", "重点"],
+          ["合同价款调整", "4 道错题 · 条件判断易错", "薄弱"],
+          ["施工成本偏差分析", "3 道错题 · 指标计算混淆", "薄弱"]
+        ],
+        priority: [
+          ["施工进度计划与控制", "第 3 章 · 历年高频", "高频"],
+          ["施工成本管理", "第 2 章 · 计算必考", "高频"],
+          ["建设工程合同管理", "第 6 章 · 易错重点", "重点"]
+        ]
+      }
+    };
+    let currentSubject = "practice";
     let timer;
     function showToast(text) {
       toast.textContent = text;
@@ -382,6 +462,48 @@
       clearTimeout(timer);
       timer = setTimeout(() => toast.classList.remove("show"), 1400);
     }
+    function pointHtml(points) {
+      return points.map((point, index) =>
+        `<div class="point"><b>${index + 1}</b><div><h4>${point[0]}</h4><p>${point[1]}</p></div><em>${point[2]}</em></div>`
+      ).join("");
+    }
+    function radarPoint(score, index) {
+      const angles = [-90, -18, 54, 126, 198];
+      const radius = 69 * score / 100;
+      const angle = angles[index] * Math.PI / 180;
+      return [95 + radius * Math.cos(angle), 89 + radius * Math.sin(angle)];
+    }
+    function renderSubject(key) {
+      currentSubject = key;
+      const data = subjectData[key];
+      document.querySelector('[data-role="history-source"]').textContent =
+        `依据${data.name}科目全平台历史做题记录生成`;
+      document.querySelector('[data-role="history-count"]').textContent =
+        `已分析 ${data.wrong} 道错题 · 覆盖 ${data.covered} 个考点`;
+      document.querySelectorAll("[data-radar-label]").forEach((label, index) => {
+        label.textContent = data.labels[index];
+      });
+      const points = data.scores.map(radarPoint);
+      document.querySelector('[data-role="radar-area"]').setAttribute(
+        "points", points.map(point => point.map(value => value.toFixed(1)).join(",")).join(" ")
+      );
+      document.querySelector('[data-role="radar-points"]').innerHTML =
+        points.map(point => `<circle cx="${point[0].toFixed(1)}" cy="${point[1].toFixed(1)}" r="3"/>`).join("");
+      document.querySelector('[data-role="radar-scores"]').innerHTML =
+        data.labels.slice(0, 4).map((label, index) =>
+          `<div class="${data.scores[index] < 50 ? "weak" : ""}"><span>${label}</span><strong>${data.scores[index]}%</strong></div>`
+        ).join("");
+      document.querySelector('[data-role="weak-points"]').innerHTML = pointHtml(data.weak);
+      document.querySelector('[data-role="priority-points"]').innerHTML = pointHtml(data.priority);
+    }
+    document.querySelectorAll(".subject-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelector(".subject-tab.active")?.classList.remove("active");
+        tab.classList.add("active");
+        renderSubject(tab.dataset.subject);
+        showToast(`已切换至${subjectData[tab.dataset.subject].name}`);
+      });
+    });
     document.querySelectorAll(".scenario-btn").forEach((button) => {
       button.addEventListener("click", () => {
         app.dataset.scene = button.dataset.scene;
@@ -394,12 +516,13 @@
     });
     document.querySelector(".back").addEventListener("click", () => location.href = "01_入口_会员态_demo.html");
     document.querySelector('[data-action="continue"]').addEventListener("click", () => {
-      location.href = "03_考点推荐_demo.html";
+      location.href = `03_考点推荐_demo.html?subject=${encodeURIComponent(subjectData[currentSubject].name)}`;
     });
     document.querySelector('[data-action="practice"]').addEventListener("click", () => {
       location.href = "01_入口_会员态_demo.html";
     });
     document.querySelector('[data-action="practice"]').style.display = "none";
+    renderSubject(currentSubject);
   </script>
 </body>
 </html>

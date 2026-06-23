@@ -1290,6 +1290,14 @@
         : "将从第 1 个推荐考点开始";
     }
 
+    function syncSubjectFromQuery() {
+      const subject = new URLSearchParams(location.search).get("subject");
+      if (!subject) return;
+      document.querySelectorAll(".subject-tab").forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.subject === subject);
+      });
+    }
+
     document.querySelectorAll(".scenario-btn").forEach((button) => {
       button.addEventListener("click", () => {
         scene = button.dataset.scene;
@@ -1412,6 +1420,7 @@
     });
 
     syncRecommendationProgress();
+    syncSubjectFromQuery();
   </script>
 </body>
 </html>
