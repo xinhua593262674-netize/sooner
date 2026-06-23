@@ -606,26 +606,6 @@
       right: 10px;
     }
 
-    .recommend-main > .lock-mark {
-      position: absolute;
-      right: 10px;
-      top: 9px;
-    }
-
-    .app.non-member .recommend-main .recommend-badge {
-      display: none;
-    }
-
-    .app.non-member .recommend-main > .lock-mark {
-      display: inline-flex;
-    }
-
-    .app.non-member .practice {
-      background: #d7dce5;
-      box-shadow: none;
-      color: #fff;
-    }
-
     .review-area-title {
       display: flex;
       align-items: center;
@@ -1024,7 +1004,6 @@
           <h3>资金时间价值计算基础</h3>
           <div class="reason">6 道错题&nbsp;&nbsp; | &nbsp;&nbsp;公式记忆不准</div>
           <span class="recommend-badge" data-role="first-status">推荐</span>
-          <span class="lock-mark">VIP</span>
         </article>
 
         <article class="recommend-row">
@@ -1050,7 +1029,7 @@
         </article>
 
         <div class="recommend-action">
-          <button class="practice" data-action="practice">立即练习</button>
+          <button class="practice" data-action="practice" data-free="true">立即练习</button>
           <p data-role="practice-tip">将从第 1 个推荐考点开始</p>
         </div>
       </section>
@@ -1084,7 +1063,7 @@
             </button>
 
             <div class="chapter-body">
-              <button class="point-row" data-action="point" data-status="推荐">
+              <button class="point-row" data-action="point" data-status="推荐" data-free="true">
                 <span class="point-number">1</span>
                 <span class="point-copy">
                   <h4>资金时间价值计算基础</h4>
@@ -1305,7 +1284,7 @@
       firstStatus.classList.toggle("mastered", firstMastered);
       practiceButton.textContent = firstMastered ? "继续练习" : "立即练习";
       practiceButton.dataset.startIndex = firstMastered ? "2" : "1";
-      practiceButton.dataset.free = "false";
+      practiceButton.dataset.free = firstMastered ? "false" : "true";
       practiceTip.textContent = firstMastered
         ? "第 1 个考点已掌握，将从第 2 个考点继续"
         : "将从第 1 个推荐考点开始";
