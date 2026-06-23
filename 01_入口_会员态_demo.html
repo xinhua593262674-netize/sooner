@@ -550,80 +550,251 @@
 
     .chapter-progress {
       display: none;
+      position: relative;
       align-items: center;
-      justify-content: space-between;
-      min-height: 68px;
-      margin-top: 18px;
-      padding: 14px 16px;
-      border: 1px solid #d9e5ff;
-      border-radius: 8px;
-      background: linear-gradient(110deg, #f5f9ff, #edf4ff);
+      min-height: 70px;
+      margin: 0 0 14px;
+      padding: 14px 42px 13px 15px;
+      border-radius: 4px;
+      background: #fff;
     }
 
     .chapter-progress strong {
       display: block;
-      margin-bottom: 4px;
-      font-size: 16px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 500;
     }
 
     .chapter-progress span {
-      color: var(--muted);
+      color: #9a9fa8;
       font-size: 12px;
     }
 
     .continue-btn {
-      min-width: 82px;
-      height: 36px;
-      border-radius: 999px;
-      color: #fff;
-      background: var(--blue);
-      font-size: 13px;
-      font-weight: 700;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border-right: 1.5px solid #b6b9bf;
+      border-bottom: 1.5px solid #b6b9bf;
+      font-size: 0;
+      transform: translateY(-50%) rotate(-45deg);
     }
 
-    .app.chapter-mode .export,
-    .app.chapter-mode .trash,
-    .app.chapter-mode .vip-export {
+    .chapter-extra {
       display: none;
+    }
+
+    .update-badge {
+      display: inline-block;
+      margin-left: 5px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      color: #e6a15e;
+      background: #fff5e9;
+      font-size: 10px;
+      font-weight: 500;
+      vertical-align: 2px;
+    }
+
+    .chapter-detail {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      color: #969ca6;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .mini-progress {
+      width: 58px;
+      height: 4px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e4e6ea;
+    }
+
+    .mini-progress i {
+      display: block;
+      width: var(--progress, 0%);
+      height: 100%;
+      border-radius: inherit;
+      background: #448cff;
+    }
+
+    .chapter-detail .unfinished {
+      color: #3980e9;
+    }
+
+    .chapter-promo {
+      display: none;
+      position: sticky;
+      bottom: 10px;
+      align-items: center;
+      min-height: 72px;
+      margin: 160px 2px 0;
+      padding: 10px 12px 10px 77px;
+      border: 1px solid #d8e3ff;
+      border-radius: 8px;
+      background: linear-gradient(100deg, #f8f1ff, #eff8ff);
+      box-shadow: 0 6px 20px rgba(64, 93, 150, .05);
+    }
+
+    .promo-avatar {
+      position: absolute;
+      left: 17px;
+      bottom: 0;
+      display: grid;
+      place-items: center;
+      width: 50px;
+      height: 62px;
+      font-size: 43px;
+      overflow: hidden;
+    }
+
+    .chapter-promo strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+
+    .chapter-promo p {
+      margin: 0;
+      color: #4d5667;
+      font-size: 11px;
+    }
+
+    .assessment-btn {
+      position: absolute;
+      right: 30px;
+      top: 19px;
+      min-width: 66px;
+      height: 28px;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(135deg, #945cff, #7354f5);
+      font-size: 12px;
+    }
+
+    .promo-close {
+      position: absolute;
+      right: 9px;
+      top: 7px;
+      color: #9199a7;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .app.chapter-mode .vip-export,
+    .app.chapter-mode .smart-card {
+      display: none;
+    }
+
+    .app.chapter-mode .export::before {
+      width: 17px;
+      height: 17px;
+      border: 2px solid #252b4a;
+      border-radius: 5px;
+      transform: rotate(30deg);
+    }
+
+    .app.chapter-mode .export::after {
+      top: 50%;
+      right: 50%;
+      min-width: 0;
+      width: 5px;
+      height: 5px;
+      padding: 0;
+      border: 1.5px solid #252b4a;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: none;
+      transform: translate(50%, -50%);
+      content: "";
+    }
+
+    .app.chapter-mode main {
+      padding: 14px 0 0;
+      background: #f6f7f9;
     }
 
     .app.chapter-mode .chapter-progress {
       display: flex;
+      margin-right: 14px;
+      margin-left: 14px;
+    }
+
+    .app.chapter-mode .chapter-list {
+      display: block;
+      padding: 0;
+      background: #fff;
     }
 
     .app.chapter-mode .chapter-item {
-      grid-template-columns: 25px 1fr 22px;
+      grid-template-columns: 18px 1fr 28px;
+      align-items: start;
+      gap: 7px;
+      min-height: 98px;
+      padding: 20px 14px 17px 16px;
+      border-bottom: 10px solid #f6f7f9;
+    }
+
+    .app.chapter-mode .chapter-item + .chapter-item {
+      padding-top: 20px;
     }
 
     .app.chapter-mode .plus {
-      border-radius: 50%;
-      color: #fff;
-      background: var(--blue);
-      font-size: 0;
+      width: 12px;
+      height: 12px;
+      margin-top: 2px;
+      border-radius: 0;
+      color: var(--blue);
+      background: #fff;
+      font-size: 11px;
+      line-height: 10px;
     }
 
     .app.chapter-mode .plus::after {
-      width: 5px;
-      height: 5px;
-      border-right: 1.5px solid #fff;
-      border-bottom: 1.5px solid #fff;
-      transform: rotate(-45deg);
-      content: "";
+      content: none;
     }
 
     .app.chapter-mode .edit {
+      display: block;
+      margin-top: 0;
+    }
+
+    .app.chapter-mode .chapter-title {
+      margin: 0 0 15px;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .app.chapter-mode .chapter-item:nth-child(-n+3) .chapter-title::after {
+      display: inline-block;
+      margin-left: 5px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      color: #e6a15e;
+      background: #fff5e9;
+      font-size: 10px;
+      font-weight: 500;
+      vertical-align: 2px;
+      content: "有更新";
+    }
+
+    .app.chapter-mode .chapter-meta {
       display: none;
     }
 
-    .app.chapter-mode .chapter-item::after {
-      align-self: center;
-      width: 7px;
-      height: 7px;
-      margin-top: 4px;
-      border-right: 1.5px solid #a5afc0;
-      border-bottom: 1.5px solid #a5afc0;
-      transform: rotate(-45deg);
-      content: "";
+    .app.chapter-mode .chapter-extra,
+    .app.chapter-mode .chapter-detail {
+      display: flex;
+    }
+
+    .app.chapter-mode .chapter-promo {
+      display: flex;
     }
 
     .toast {
@@ -669,11 +840,11 @@
 <body>
   <aside class="scenario-switch" aria-label="入口场景切换">
     <span>入口场景</span>
-    <button class="scenario-btn active" data-scene="wrong">错题集</button>
-    <button class="scenario-btn" data-scene="chapter">章节精练</button>
+    <button class="scenario-btn" data-scene="wrong">错题集</button>
+    <button class="scenario-btn active" data-scene="chapter">章节精练</button>
   </aside>
 
-  <div class="app">
+  <div class="app chapter-mode">
     <header>
       <div class="statusbar">
         <span>11:55</span>
@@ -686,20 +857,25 @@
 
       <div class="navbar">
         <button class="nav-icon back" aria-label="返回"></button>
-        <h1 data-role="page-title">错题集</h1>
+        <h1 data-role="page-title">章节精练</h1>
         <button class="nav-icon export" aria-label="导出错题"></button>
         <button class="nav-icon trash" aria-label="删除"></button>
       </div>
 
       <nav class="subject-tabs" aria-label="科目">
-        <button class="subject-tab">建筑实务</button>
+        <button class="subject-tab active">建筑实务</button>
         <button class="subject-tab">法规</button>
-        <button class="subject-tab active">经济</button>
+        <button class="subject-tab">经济</button>
         <button class="subject-tab">管理</button>
       </nav>
     </header>
 
     <main>
+      <section class="chapter-progress">
+        <div><strong>继续上次练习</strong><span>第 1 章 建筑工程设计与构造要求</span></div>
+        <button class="continue-btn" aria-label="继续上次练习">继续学习</button>
+      </section>
+
       <section class="smart-card" aria-label="复习专区入口">
         <span class="card-vip">VIP</span>
         <div class="smart-main">
@@ -729,8 +905,9 @@
         <article class="chapter-item">
           <span class="plus">+</span>
           <div>
-            <h2 class="chapter-title">第 1 篇&nbsp;&nbsp;工程经济</h2>
+            <h2 class="chapter-title" data-wrong-title="第 1 篇&nbsp;&nbsp;工程经济" data-chapter-title="第 1 篇 建筑工程技术">第 1 篇&nbsp;&nbsp;工程经济</h2>
             <div class="chapter-meta" data-wrong="共 <em>13</em> 道错题&nbsp;&nbsp;&nbsp; 已做对 <em class='green'>5</em> 道" data-chapter="共 <em>8</em> 个章节&nbsp;&nbsp;&nbsp; 已完成 <em class='green'>3</em> 个">共 <em>13</em> 道错题&nbsp;&nbsp;&nbsp; 已做对 <em class="green">5</em> 道</div>
+            <div class="chapter-detail"><span class="mini-progress" style="--progress: 1%"><i></i></span><span>7/1089</span><span>|</span><span>正确率 86%</span><span>|</span><span class="unfinished">未作答 1082 ›</span></div>
           </div>
           <button class="edit" aria-label="编辑"></button>
         </article>
@@ -738,8 +915,9 @@
         <article class="chapter-item">
           <span class="plus">+</span>
           <div>
-            <h2 class="chapter-title">第 2 篇&nbsp;&nbsp;工程财务</h2>
+            <h2 class="chapter-title" data-wrong-title="第 2 篇&nbsp;&nbsp;工程财务" data-chapter-title="第 2 篇 建筑工程相关法规与标准">第 2 篇&nbsp;&nbsp;工程财务</h2>
             <div class="chapter-meta" data-wrong="共 <em>1</em> 道错题&nbsp;&nbsp;&nbsp; 已做对 <em class='green'>0</em> 道" data-chapter="共 <em>6</em> 个章节&nbsp;&nbsp;&nbsp; 已完成 <em class='green'>1</em> 个">共 <em>1</em> 道错题&nbsp;&nbsp;&nbsp; 已做对 <em class="green">0</em> 道</div>
+            <div class="chapter-detail"><span class="mini-progress"><i></i></span><span>0/324</span><span>|</span><span>正确率 0%</span><span>|</span><span class="unfinished">未作答 324 ›</span></div>
           </div>
           <button class="edit" aria-label="编辑"></button>
         </article>
@@ -747,8 +925,9 @@
         <article class="chapter-item">
           <span class="plus">+</span>
           <div>
-            <h2 class="chapter-title">第 3 篇&nbsp;&nbsp;工程计价</h2>
+            <h2 class="chapter-title" data-wrong-title="第 3 篇&nbsp;&nbsp;工程计价" data-chapter-title="第 3 篇 建筑工程项目管理实务">第 3 篇&nbsp;&nbsp;工程计价</h2>
             <div class="chapter-meta" data-wrong="共 <em>2</em> 道错题&nbsp;&nbsp;&nbsp; 已做对 <em class='green'>0</em> 道" data-chapter="共 <em>9</em> 个章节&nbsp;&nbsp;&nbsp; 已完成 <em class='green'>0</em> 个">共 <em>2</em> 道错题&nbsp;&nbsp;&nbsp; 已做对 <em class="green">0</em> 道</div>
+            <div class="chapter-detail"><span class="mini-progress"><i></i></span><span>0/640</span><span>|</span><span>正确率 0%</span><span>|</span><span class="unfinished">未作答 640 ›</span></div>
           </div>
           <button class="edit" aria-label="编辑"></button>
         </article>
@@ -756,8 +935,9 @@
         <article class="chapter-item">
           <span class="plus">+</span>
           <div>
-            <h2 class="chapter-title">第 4 篇&nbsp;&nbsp;历年过时真题（为保证真题完整性而设置）</h2>
+            <h2 class="chapter-title" data-wrong-title="第 4 篇&nbsp;&nbsp;历年过时真题（为保证真题完整性而设置）" data-chapter-title="历年过时真题">第 4 篇&nbsp;&nbsp;历年过时真题（为保证真题完整性而设置）</h2>
             <div class="chapter-meta" data-wrong="共 <em>5</em> 道错题&nbsp;&nbsp;&nbsp; 已做对 <em class='green'>0</em> 道" data-chapter="共 <em>4</em> 个章节&nbsp;&nbsp;&nbsp; 已完成 <em class='green'>0</em> 个">共 <em>5</em> 道错题&nbsp;&nbsp;&nbsp; 已做对 <em class="green">0</em> 道</div>
+            <div class="chapter-detail"><span class="mini-progress"><i></i></span><span>0/6</span><span>|</span><span>正确率 0%</span><span>|</span><span class="unfinished">未作答 6 ›</span></div>
           </div>
           <button class="edit" aria-label="编辑"></button>
         </article>
@@ -768,9 +948,11 @@
         <button class="export-btn">导出错题</button>
       </section>
 
-      <section class="chapter-progress">
-        <div><strong>继续上次精练</strong><span>工程经济 · 资金时间价值计算</span></div>
-        <button class="continue-btn">继续学习</button>
+      <section class="chapter-promo">
+        <span class="promo-avatar" aria-hidden="true">👩🏻‍🏫</span>
+        <div><strong>时间紧刷题进度慢</strong><p>吃透核心考点，带练刷题配预测卷</p></div>
+        <button class="assessment-btn">开始测评</button>
+        <button class="promo-close" aria-label="关闭">×</button>
       </section>
     </main>
 
@@ -782,6 +964,7 @@
     const app = document.querySelector(".app");
     const pageTitle = document.querySelector('[data-role="page-title"]');
     const entryDescription = document.querySelector('[data-role="entry-description"]');
+    const subjectTabs = [...document.querySelectorAll(".subject-tab")];
     let toastTimer;
 
     function showToast(message) {
@@ -795,28 +978,40 @@
       location.href = "03_考点推荐_demo.html";
     });
 
-    document.querySelectorAll(".scenario-btn").forEach((button) => {
-      button.addEventListener("click", () => {
-        const isChapter = button.dataset.scene === "chapter";
-        document.querySelectorAll(".scenario-btn").forEach((item) => {
-          item.classList.toggle("active", item === button);
-        });
-        app.classList.toggle("chapter-mode", isChapter);
-        pageTitle.textContent = isChapter ? "章节精练" : "错题集";
-        document.title = isChapter ? "章节精练 · 复习专区入口" : "错题集 · 复习专区入口";
-        entryDescription.textContent = isChapter
-          ? "结合章节学习进度，推荐重点考点专项复习"
-          : "依据做题记录，剖析错因，推送考点复习";
-        document.querySelectorAll(".chapter-meta").forEach((meta) => {
-          meta.innerHTML = isChapter ? meta.dataset.chapter : meta.dataset.wrong;
-        });
-        showToast(isChapter ? "已切换：章节精练场景" : "已切换：错题集场景");
+    function setScene(scene, notify = false) {
+      const isChapter = scene === "chapter";
+      document.querySelectorAll(".scenario-btn").forEach((item) => {
+        item.classList.toggle("active", item.dataset.scene === scene);
       });
+      app.classList.toggle("chapter-mode", isChapter);
+      pageTitle.textContent = isChapter ? "章节精练" : "错题集";
+      document.title = isChapter ? "章节精练 · 复习专区入口" : "错题集 · 复习专区入口";
+      entryDescription.textContent = isChapter
+        ? "结合章节学习进度，推荐重点考点专项复习"
+        : "依据做题记录，剖析错因，推送考点复习";
+      subjectTabs.forEach((tab, index) => tab.classList.toggle("active", index === (isChapter ? 0 : 2)));
+      document.querySelectorAll(".chapter-meta").forEach((meta) => {
+        meta.innerHTML = isChapter ? meta.dataset.chapter : meta.dataset.wrong;
+      });
+      document.querySelectorAll(".chapter-title").forEach((title) => {
+        title.innerHTML = isChapter ? title.dataset.chapterTitle : title.dataset.wrongTitle;
+      });
+      if (notify) showToast(isChapter ? "已切换：章节精练场景" : "已切换：错题集场景");
+    }
+
+    document.querySelectorAll(".scenario-btn").forEach((button) => {
+      button.addEventListener("click", () => setScene(button.dataset.scene, true));
     });
+
+    setScene("chapter");
 
     document.querySelector(".back").addEventListener("click", () => showToast("返回上一页"));
     document.querySelector(".export-btn").addEventListener("click", () => showToast("导出错题文档"));
     document.querySelector(".continue-btn").addEventListener("click", () => showToast("继续章节精练"));
+    document.querySelector(".assessment-btn").addEventListener("click", () => showToast("开始章节测评"));
+    document.querySelector(".promo-close").addEventListener("click", (event) => {
+      event.currentTarget.closest(".chapter-promo").style.display = "none";
+    });
     document.querySelectorAll(".edit").forEach((button) => {
       button.addEventListener("click", () => showToast("编辑错题分组"));
     });
