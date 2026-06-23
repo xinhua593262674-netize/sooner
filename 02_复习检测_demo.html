@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>复习专区 · 学情检测</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #176bff;
+      --ink: #11192c;
+      --muted: #758096;
+      --line: #e8edf5;
+      --orange: #ff7135;
+      --green: #12af57;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body {
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: var(--ink);
+      background: #eef3fb;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
+        "Helvetica Neue", "Microsoft YaHei", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button { border: 0; padding: 0; font: inherit; color: inherit; background: none; cursor: pointer; }
+    button:active { opacity: .72; }
+    .app {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 393px;
+      height: 852px;
+      max-width: 100vw;
+      max-height: 100dvh;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f4f8ff 0, #fff 32%);
+      box-shadow: 0 0 60px rgba(32, 50, 85, .13);
+    }
+    .scenario-switch {
+      position: fixed;
+      left: calc(50% + 212px);
+      top: max(0px, calc((100dvh - 852px) / 2));
+      z-index: 30;
+      display: grid;
+      gap: 8px;
+      width: 116px;
+      padding: 9px;
+      border: 1px solid #e1e7f1;
+      border-radius: 14px;
+      background: rgba(255,255,255,.95);
+      box-shadow: 0 10px 30px rgba(24,45,78,.12);
+    }
+    .scenario-switch span { color: #667085; font-size: 11px; text-align: center; }
+    .scenario-btn {
+      height: 31px;
+      border: 1px solid #dfe6f2;
+      border-radius: 999px;
+      color: #667085;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .scenario-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
+    header { flex: none; background: rgba(255,255,255,.94); }
+    .statusbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 45px;
+      padding: 5px 27px 0 31px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .status-icons { display: flex; align-items: center; gap: 8px; }
+    .cellular { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+    .cellular i { width: 3px; border-radius: 1px; background: #111; }
+    .cellular i:nth-child(1) { height: 4px; }
+    .cellular i:nth-child(2) { height: 6px; }
+    .cellular i:nth-child(3) { height: 9px; }
+    .cellular i:nth-child(4) { height: 12px; }
+    .wifi { width: 15px; font-size: 13px; }
+    .battery {
+      display: grid;
+      place-items: center;
+      width: 23px;
+      height: 12px;
+      border-radius: 3px;
+      color: #fff;
+      background: #171717;
+      font-size: 8px;
+    }
+    .navbar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 55px;
+      border-bottom: 1px solid var(--line);
+    }
+    .navbar h1 { margin: 0; font-size: 18px; font-weight: 700; }
+    .back { position: absolute; left: 18px; width: 28px; height: 36px; }
+    .back::before {
+      display: block;
+      width: 11px;
+      height: 11px;
+      border-left: 2px solid #152037;
+      border-bottom: 2px solid #152037;
+      transform: rotate(45deg);
+      content: "";
+    }
+    main {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 18px 16px 96px;
+      scrollbar-width: none;
+    }
+    main::-webkit-scrollbar { display: none; }
+    .hero { margin-bottom: 14px; text-align: center; }
+    .scan-icon {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 10px;
+      border-radius: 20px;
+      color: #fff;
+      background: linear-gradient(145deg, #3d8cff, #0b62ef);
+      box-shadow: 0 10px 24px rgba(23,107,255,.22);
+      font-size: 27px;
+    }
+    .scan-icon::after {
+      position: absolute;
+      inset: -5px;
+      border: 1px solid rgba(23,107,255,.22);
+      border-radius: 24px;
+      content: "";
+    }
+    .hero h2 { margin: 0 0 6px; font-size: 21px; }
+    .hero p { margin: 0; color: var(--muted); font-size: 12px; }
+    .data-chip {
+      display: inline-flex;
+      gap: 5px;
+      margin-top: 9px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: #316bc4;
+      background: #eaf2ff;
+      font-size: 11px;
+    }
+    .card {
+      margin-bottom: 12px;
+      padding: 15px;
+      border: 1px solid #e2e9f5;
+      border-radius: 12px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 7px 22px rgba(47,72,117,.06);
+    }
+    .card-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .card-title h3 { margin: 0; font-size: 16px; }
+    .card-title span { color: var(--muted); font-size: 10px; }
+    .radar-wrap { display: grid; grid-template-columns: 190px 1fr; align-items: center; gap: 4px; }
+    .radar { width: 190px; height: 178px; overflow: visible; }
+    .radar .grid { fill: none; stroke: #dfe6f1; stroke-width: 1; }
+    .radar .axis { stroke: #e7ebf3; stroke-width: 1; }
+    .radar .area { fill: rgba(23,107,255,.23); stroke: #176bff; stroke-width: 2; }
+    .radar circle { fill: #176bff; }
+    .radar text { fill: #68748b; font-size: 10px; }
+    .radar-score { display: grid; gap: 9px; font-size: 11px; }
+    .radar-score div { display: flex; justify-content: space-between; color: var(--muted); }
+    .radar-score strong { color: var(--ink); font-size: 12px; }
+    .radar-score .weak strong { color: var(--orange); }
+    .point-list { display: grid; gap: 8px; }
+    .point {
+      position: relative;
+      display: grid;
+      grid-template-columns: 26px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      min-height: 52px;
+      padding: 8px 9px;
+      border-radius: 8px;
+      background: #f8faff;
+    }
+    .point b {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: var(--blue);
+      background: #eaf2ff;
+      font-size: 12px;
+    }
+    .point h4 { margin: 0 0 4px; font-size: 13px; }
+    .point p { margin: 0; color: var(--muted); font-size: 10px; }
+    .point em {
+      padding: 3px 6px;
+      border-radius: 4px;
+      color: var(--orange);
+      background: #fff0e8;
+      font-size: 9px;
+      font-style: normal;
+    }
+    .empty-illustration {
+      display: grid;
+      place-items: center;
+      width: 82px;
+      height: 82px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: #edf4ff;
+      font-size: 39px;
+    }
+    .empty-copy { text-align: center; }
+    .empty-copy h3 { margin: 0 0 7px; font-size: 18px; }
+    .empty-copy p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 12px 0;
+      padding: 10px;
+      border-radius: 8px;
+      color: #79500b;
+      background: #fff6de;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .bottom-action {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px 16px max(18px, env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(255,255,255,.7), #fff 24%);
+    }
+    .primary {
+      width: 100%;
+      height: 46px;
+      border-radius: 10px;
+      color: #fff;
+      background: linear-gradient(135deg, #2679ff, #0b5ff1);
+      box-shadow: 0 8px 18px rgba(23,107,255,.2);
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .secondary-link { display: block; margin: 9px auto 0; color: #718099; font-size: 11px; }
+    .scene { display: none; }
+    .app[data-scene="history"] .history-scene,
+    .app[data-scene="empty"] .empty-scene { display: block; }
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 84px;
+      padding: 9px 15px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(16,24,43,.9);
+      font-size: 12px;
+      transform: translate(-50%, 16px);
+      opacity: 0;
+      transition: .2s;
+      pointer-events: none;
+    }
+    .toast.show { transform: translate(-50%,0); opacity: 1; }
+    @media (min-width: 430px), (min-height: 890px) { .app { border-radius: 26px; } }
+    @media (max-width: 392px) {
+      .app { width: 100vw; height: 100dvh; }
+      .scenario-switch { left: auto; right: 8px; top: auto; bottom: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="scenario-switch" aria-label="检测场景">
+    <span>检测场景</span>
+    <button class="scenario-btn active" data-scene="history">有错题数据</button>
+    <button class="scenario-btn" data-scene="empty">无错题数据</button>
+  </aside>
+
+  <div class="app" data-scene="history">
+    <header>
+      <div class="statusbar">
+        <span>10:18</span>
+        <div class="status-icons"><span class="cellular"><i></i><i></i><i></i><i></i></span><span class="wifi">⌁</span><span class="battery">56</span></div>
+      </div>
+      <div class="navbar"><button class="back" aria-label="返回"></button><h1>学情检测</h1></div>
+    </header>
+
+    <main>
+      <section class="scene history-scene">
+        <div class="hero">
+          <div class="scan-icon">◎</div>
+          <h2>已完成你的错题分析</h2>
+          <p>依据经济科目全平台历史做题记录生成</p>
+          <span class="data-chip">已分析 36 道错题 · 覆盖 12 个考点</span>
+        </div>
+
+        <section class="card">
+          <div class="card-title"><h3>各篇学习表现</h3><span>正确率越低越薄弱</span></div>
+          <div class="radar-wrap">
+            <svg class="radar" viewBox="0 0 190 178" aria-label="各篇正确率雷达图">
+              <polygon class="grid" points="95,20 158,66 134,141 56,141 32,66"/>
+              <polygon class="grid" points="95,42 139,74 122,126 68,126 51,74"/>
+              <polygon class="grid" points="95,64 120,82 110,111 80,111 70,82"/>
+              <line class="axis" x1="95" y1="89" x2="95" y2="20"/><line class="axis" x1="95" y1="89" x2="158" y2="66"/>
+              <line class="axis" x1="95" y1="89" x2="134" y2="141"/><line class="axis" x1="95" y1="89" x2="56" y2="141"/><line class="axis" x1="95" y1="89" x2="32" y2="66"/>
+              <polygon class="area" points="95,39 134,76 113,113 73,119 47,73"/>
+              <circle cx="95" cy="39" r="3"/><circle cx="134" cy="76" r="3"/><circle cx="113" cy="113" r="3"/><circle cx="73" cy="119" r="3"/><circle cx="47" cy="73" r="3"/>
+              <text x="78" y="13">工程经济</text><text x="158" y="64">工程财务</text><text x="132" y="156">工程计价</text><text x="20" y="157">历年真题</text><text x="0" y="64">综合应用</text>
+            </svg>
+            <div class="radar-score">
+              <div><span>工程经济</span><strong>72%</strong></div>
+              <div><span>工程财务</span><strong>61%</strong></div>
+              <div class="weak"><span>工程计价</span><strong>43%</strong></div>
+              <div class="weak"><span>历年真题</span><strong>38%</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-title"><h3>优先补强的考点</h3><span>综合错题与考点价值</span></div>
+          <div class="point-list">
+            <div class="point"><b>1</b><div><h4>资金时间价值计算基础</h4><p>6 道错题 · 公式记忆不准</p></div><em>重点</em></div>
+            <div class="point"><b>2</b><div><h4>现值与终值换算</h4><p>4 道错题 · 计算公式混淆</p></div><em>薄弱</em></div>
+            <div class="point"><b>3</b><div><h4>经济效果评价指标</h4><p>5 道错题 · 指标适用混淆</p></div><em>薄弱</em></div>
+          </div>
+        </section>
+      </section>
+
+      <section class="scene empty-scene">
+        <div class="hero">
+          <div class="empty-illustration">📝</div>
+          <div class="empty-copy">
+            <h3>还没有足够的错题数据</h3>
+            <p>完成更多章节练习后，我们会结合你的错题<br/>生成更准确的薄弱考点推荐。</p>
+          </div>
+        </div>
+        <div class="tip"><span>💡</span><span>当前先依据考试频率和考点价值，为你准备少量优先考点，不用盲目刷题。</span></div>
+        <section class="card">
+          <div class="card-title"><h3>建议先练这 3 个考点</h3><span>高频 · 高价值</span></div>
+          <div class="point-list">
+            <div class="point"><b>1</b><div><h4>资金时间价值计算基础</h4><p>第 1 篇 / 第 1 章 · 历年高频</p></div><em>高频</em></div>
+            <div class="point"><b>2</b><div><h4>现值与终值换算</h4><p>第 1 篇 / 第 1 章 · 公式必考</p></div><em>高频</em></div>
+            <div class="point"><b>3</b><div><h4>经济效果评价指标</h4><p>第 1 篇 / 第 2 章 · 易混考点</p></div><em>重点</em></div>
+          </div>
+        </section>
+        <section class="card">
+          <div class="card-title"><h3>怎样获得个性化推荐？</h3></div>
+          <div class="point-list">
+            <div class="point"><b>①</b><div><h4>完成章节练习</h4><p>系统自动积累你的做题与错题记录</p></div></div>
+            <div class="point"><b>②</b><div><h4>生成专属薄弱分析</h4><p>推荐结果会随新错题和掌握状态更新</p></div></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <button class="primary" data-action="continue">查看我的考点推荐</button>
+      <button class="secondary-link" data-action="practice">先去章节精练积累数据</button>
+    </div>
+    <div class="toast"></div>
+  </div>
+
+  <script>
+    const app = document.querySelector(".app");
+    const toast = document.querySelector(".toast");
+    let timer;
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add("show");
+      clearTimeout(timer);
+      timer = setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+    document.querySelectorAll(".scenario-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        app.dataset.scene = button.dataset.scene;
+        document.querySelectorAll(".scenario-btn").forEach((item) => item.classList.toggle("active", item === button));
+        document.querySelector('[data-action="continue"]').textContent =
+          button.dataset.scene === "history" ? "查看我的考点推荐" : "先练这 3 个高频考点";
+        document.querySelector('[data-action="practice"]').style.display =
+          button.dataset.scene === "history" ? "none" : "block";
+      });
+    });
+    document.querySelector(".back").addEventListener("click", () => location.href = "01_入口_会员态_demo.html");
+    document.querySelector('[data-action="continue"]').addEventListener("click", () => {
+      location.href = "03_考点推荐_demo.html";
+    });
+    document.querySelector('[data-action="practice"]').addEventListener("click", () => {
+      location.href = "01_入口_会员态_demo.html";
+    });
+    document.querySelector('[data-action="practice"]').style.display = "none";
+  </script>
+</body>
+</html>
