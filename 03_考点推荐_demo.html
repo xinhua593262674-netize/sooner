@@ -455,20 +455,10 @@
     .recommend-meta {
       display: flex;
       align-items: center;
-      gap: 10px;
       min-width: 0;
       color: #69748a;
       font-size: 10px;
       white-space: nowrap;
-    }
-
-    .today {
-      flex: none;
-      padding: 3px 7px;
-      border: 1px solid #ff9d65;
-      border-radius: 999px;
-      color: var(--orange);
-      background: #fff;
     }
 
     .breadcrumb {
@@ -533,17 +523,27 @@
       position: relative;
       display: flex;
       align-items: center;
-      min-height: 54px;
-      padding: 9px 92px 8px 39px;
+      min-height: 65px;
+      padding: 8px 92px 8px 39px;
       border-top: 1px solid var(--line);
       background: #fff;
     }
 
     .recommend-row .rank {
-      top: 14px;
+      top: 23px;
       border-color: #dfe5ef;
       color: #252f42;
       background: #f7f9fc;
+    }
+
+    .row-breadcrumb {
+      margin-bottom: 5px;
+      overflow: hidden;
+      color: #69748a;
+      font-size: 10px;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .recommend-row h3 {
@@ -999,7 +999,6 @@
         <article class="recommend-main">
           <span class="rank">1</span>
           <div class="recommend-meta">
-            <span class="today">今日优先</span>
             <span class="breadcrumb">第 1 篇 工程经济&nbsp; / &nbsp;第 1 章 资金时间价值计算</span>
           </div>
           <h3>资金时间价值计算基础</h3>
@@ -1010,6 +1009,7 @@
         <article class="recommend-row">
           <span class="rank">2</span>
           <div>
+            <div class="row-breadcrumb">第 1 篇 工程经济&nbsp; / &nbsp;第 1 章 资金时间价值计算</div>
             <h3>现值与终值换算</h3>
             <div class="reason">4 道错题&nbsp;&nbsp; | &nbsp;&nbsp;计算公式混淆</div>
           </div>
@@ -1020,6 +1020,7 @@
         <article class="recommend-row">
           <span class="rank">3</span>
           <div>
+            <div class="row-breadcrumb">第 1 篇 工程经济&nbsp; / &nbsp;第 2 章 技术方案经济效果评价</div>
             <h3>经济效果评价指标</h3>
             <div class="reason">5 道错题&nbsp;&nbsp; | &nbsp;&nbsp;指标适用混淆</div>
           </div>
