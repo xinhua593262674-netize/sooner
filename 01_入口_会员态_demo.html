@@ -120,6 +120,12 @@
       text-align: center;
     }
 
+    .demo-divider {
+      height: 1px;
+      margin: 1px 0;
+      background: #edf1f7;
+    }
+
     .demo-nav-btn {
       height: 30px;
       border: 1px solid #dfe6f2;
@@ -957,6 +963,14 @@
       display: none;
     }
 
+    body.entry-position-2 > .library-app {
+      display: none;
+    }
+
+    body.entry-position-2 > .app:not(.library-app) {
+      display: flex;
+    }
+
     .library-app {
       position: relative;
       display: flex;
@@ -1424,6 +1438,10 @@
     <button class="demo-nav-btn" data-scene="wrong">错题</button>
     <button class="demo-nav-btn" data-scene="variant">变式题</button>
     <button class="demo-nav-btn" data-scene="report">复习报告</button>
+    <div class="demo-divider"></div>
+    <span>入口位置</span>
+    <button class="demo-nav-btn active" data-entry-position="1">入口1</button>
+    <button class="demo-nav-btn" data-entry-position="2">入口2</button>
   </aside>
 
   <div class="app chapter-mode">
@@ -1672,6 +1690,33 @@
       button.addEventListener("click", () => setScene(button.dataset.scene, true));
     });
 
+    function setEntryPosition(position, notify = false) {
+      document.body.classList.toggle("entry-position-2", position === "2");
+      document.querySelectorAll("[data-entry-position]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.entryPosition === position);
+      });
+      if (position === "2") {
+        setScene("wrong");
+      }
+      if (notify) {
+        const message = position === "2"
+          ? "已切换：入口2，错题集上方"
+          : "已切换：入口1，章节精练下方";
+        const libraryToast = document.querySelector(".library-toast");
+        if (position === "1" && libraryToast) {
+          libraryToast.textContent = message;
+          libraryToast.classList.add("show");
+          setTimeout(() => libraryToast.classList.remove("show"), 1200);
+        } else {
+          showToast(message);
+        }
+      }
+    }
+
+    document.querySelectorAll("[data-entry-position]").forEach((button) => {
+      button.addEventListener("click", () => setEntryPosition(button.dataset.entryPosition, true));
+    });
+
     document.querySelectorAll(".demo-nav-btn").forEach((button) => {
       button.addEventListener("click", () => {
         const params = `point=1&name=${encodeURIComponent("资金时间价值计算基础")}`;
@@ -1692,6 +1737,7 @@
     });
 
     setScene("chapter");
+    setEntryPosition(new URLSearchParams(location.search).get("entry") === "2" ? "2" : "1");
 
     document.querySelector(".back").addEventListener("click", () => showToast("返回上一页"));
     document.querySelector(".export-btn").addEventListener("click", () => showToast("导出错题文档"));
