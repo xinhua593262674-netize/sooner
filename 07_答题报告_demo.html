@@ -82,8 +82,20 @@
     }
 
     .demo-scenes > span { color: #667085; font-size: 11px; text-align: center; }
-    .scene-btn { height: 30px; border: 1px solid #dfe6f2; border-radius: 999px; color: #667085; background: #fff; font-size: 12px; font-weight: 650; }
-    .scene-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
+    .scene-divider {
+      height: 1px;
+      margin: 1px 0;
+      background: #edf1f7;
+    }
+    .scene-btn,
+    .member-btn { height: 30px; border: 1px solid #dfe6f2; border-radius: 999px; color: #667085; background: #fff; font-size: 12px; font-weight: 650; }
+    .scene-btn.active,
+    .member-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
+    .member-btn.free.active {
+      border-color: #f6b75b;
+      color: #9a6500;
+      background: #fff5dc;
+    }
 
     .statusbar {
       flex: none;
@@ -503,19 +515,9 @@
       font-size: 14px;
     }
 
-    .next-tip a {
+    .next-tip .next-point {
       color: var(--blue);
-      text-decoration: none;
       font-weight: 650;
-    }
-
-    .next-tip::after {
-      width: 7px;
-      height: 7px;
-      border-top: 1.5px solid var(--blue);
-      border-right: 1.5px solid var(--blue);
-      transform: rotate(45deg);
-      content: "";
     }
 
     .actions {
@@ -541,6 +543,34 @@
       color: #fff;
       background: linear-gradient(135deg, #287cff, #176bf2);
       box-shadow: 0 8px 18px rgba(36, 120, 255, .2);
+    }
+
+    .action.primary.locked {
+      position: relative;
+      color: #8a5b00;
+      background: linear-gradient(135deg, #fff1c9, #ffd778);
+      box-shadow: 0 8px 18px rgba(197, 129, 0, .16);
+    }
+
+    .action.primary.locked::before {
+      margin-right: 5px;
+      content: "🔒";
+    }
+
+    .action.primary.locked::after {
+      position: absolute;
+      right: 8px;
+      top: -7px;
+      height: 16px;
+      padding: 0 6px;
+      border-radius: 7px 7px 7px 1px;
+      color: #8a5b00;
+      background: linear-gradient(135deg, #ffe89d, #ffc144);
+      font-size: 10px;
+      font-style: italic;
+      font-weight: 850;
+      line-height: 16px;
+      content: "VIP";
     }
 
     .app.mastered {
@@ -578,6 +608,76 @@
       opacity: 1;
     }
 
+    .member-modal {
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 30px;
+      background: rgba(16, 24, 43, .38);
+      backdrop-filter: blur(3px);
+    }
+
+    .member-modal.show { display: flex; }
+
+    .member-card {
+      width: 100%;
+      padding: 22px 18px 18px;
+      border-radius: 18px;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 18px 46px rgba(10, 20, 40, .22);
+    }
+
+    .member-badge {
+      display: inline-grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      border-radius: 16px;
+      color: #8a5b00;
+      background: linear-gradient(135deg, #fff0bd, #ffc64d);
+      font-size: 24px;
+    }
+
+    .member-card h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .member-card p {
+      margin: 0 0 18px;
+      color: #6f7787;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .member-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .member-actions button {
+      height: 42px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .member-actions .cancel {
+      color: #6f7787;
+      background: #f3f5f8;
+    }
+
+    .member-actions .open {
+      color: #fff;
+      background: linear-gradient(135deg, #ffb743, #ff7a2a);
+    }
+
     @media (min-width: 430px), (min-height: 890px) {
       .app { border-radius: 26px; }
     }
@@ -595,11 +695,16 @@
 <body>
   <aside class="demo-scenes" aria-label="练习场景切换">
     <span>Demo 场景</span>
+    <button class="scene-btn" data-scene="entry">入口</button>
     <button class="scene-btn" data-scene="review">复习专区</button>
     <button class="scene-btn" data-scene="flashcard">闪卡</button>
     <button class="scene-btn" data-scene="wrong">错题</button>
     <button class="scene-btn" data-scene="variant">变式题</button>
     <button class="scene-btn active" data-scene="report">复习报告</button>
+    <div class="scene-divider"></div>
+    <span>会员状态</span>
+    <button class="member-btn" data-member="vip">开通会员</button>
+    <button class="member-btn free" data-member="free">未开通会员</button>
   </aside>
 
   <div class="app">
@@ -686,7 +791,7 @@
     </main>
 
     <footer class="bottom-bar">
-      <div class="next-tip">下一个推荐考点：<a href="#">道路结构组成</a></div>
+      <div class="next-tip">下一个推荐考点：<span class="next-point">道路结构组成</span></div>
       <div class="actions">
         <button class="action secondary" data-action="retry">重新练习本考点</button>
         <button class="action primary" data-action="next">练习下一个考点</button>
@@ -694,6 +799,17 @@
     </footer>
 
     <div class="toast" role="status" aria-live="polite"></div>
+    <div class="member-modal" role="dialog" aria-modal="true" aria-label="会员引导">
+      <div class="member-card">
+        <div class="member-badge">VIP</div>
+        <h2>开通会员后继续练习</h2>
+        <p>练习下一个考点为会员权益，开通后可继续按推荐顺序复习薄弱考点。</p>
+        <div class="member-actions">
+          <button class="cancel" data-action="close-member">稍后再说</button>
+          <button class="open" data-action="open-member">去开通会员</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -703,6 +819,7 @@
     const query = new URLSearchParams(location.search);
     const pointIndex = query.get("point") || "1";
     const pointName = query.get("name") || "资金时间价值计算基础";
+    let isMember = query.get("member") === "vip";
     let toastTimer;
 
     const states = {
@@ -763,6 +880,8 @@
       document.querySelector('[data-field="conclusion"]').textContent = data.conclusion;
       document.querySelector('[data-action="retry"]').textContent = data.retryLabel;
       document.querySelector('[data-action="next"]').textContent = data.nextLabel;
+      document.querySelector('[data-action="next"]').classList.toggle("locked", !isMember);
+      renderMemberScene();
 
       dots.forEach((dot) => {
         dot.classList.toggle("wrong", data.wrongDots.includes(dot.dataset.question));
@@ -771,23 +890,60 @@
 
     }
 
+    function renderMemberScene() {
+      document.querySelectorAll(".member-btn").forEach((button) => {
+        button.classList.toggle("active", button.dataset.member === (isMember ? "vip" : "free"));
+      });
+      document.querySelector('[data-action="next"]').classList.toggle("locked", !isMember);
+    }
+
     document.querySelector(".back").addEventListener("click", () => showToast("返回上一页"));
     document.querySelectorAll(".scene-btn").forEach((button) => {
       button.addEventListener("click", () => {
         const params = `point=${pointIndex}&name=${encodeURIComponent(pointName)}`;
-        if (button.dataset.scene === "review") {
-          location.href = "03_考点推荐_demo.html";
+        const memberParam = `member=${isMember ? "vip" : "free"}`;
+        if (button.dataset.scene === "entry") {
+          location.href = "01_入口_会员态_demo.html";
+        } else if (button.dataset.scene === "review") {
+          location.href = `03_考点推荐_demo.html?${memberParam}`;
         } else if (button.dataset.scene === "flashcard") {
-          location.href = `04_闪卡_demo.html?${params}`;
+          location.href = `04_闪卡_demo.html?${params}&${memberParam}`;
         } else if (button.dataset.scene === "wrong") {
-          location.href = `05_错题_06_变式题_demo.html?${params}`;
+          location.href = `05_错题_06_变式题_demo.html?${params}&${memberParam}`;
         } else if (button.dataset.scene === "variant") {
-          location.href = `05_错题_06_变式题_demo.html?${params}&start=variant`;
+          location.href = `05_错题_06_变式题_demo.html?${params}&start=variant&${memberParam}`;
         }
       });
     });
+    document.querySelectorAll(".member-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        isMember = button.dataset.member === "vip";
+        const url = new URL(location.href);
+        url.searchParams.set("member", isMember ? "vip" : "free");
+        history.replaceState(null, "", url);
+        renderMemberScene();
+      });
+    });
     document.querySelector('[data-action="retry"]').addEventListener("click", () => showToast(states[currentState].retryToast));
-    document.querySelector('[data-action="next"]').addEventListener("click", () => showToast(states[currentState].nextToast));
+    document.querySelector('[data-action="next"]').addEventListener("click", () => {
+      if (isMember) {
+        showToast(states[currentState].nextToast);
+      } else {
+        document.querySelector(".member-modal").classList.add("show");
+      }
+    });
+    document.querySelector('[data-action="close-member"]').addEventListener("click", () => {
+      document.querySelector(".member-modal").classList.remove("show");
+    });
+    document.querySelector('[data-action="open-member"]').addEventListener("click", () => {
+      showToast("进入会员落地页");
+      document.querySelector(".member-modal").classList.remove("show");
+    });
+    document.querySelector(".member-modal").addEventListener("click", (event) => {
+      if (event.target.classList.contains("member-modal")) {
+        event.currentTarget.classList.remove("show");
+      }
+    });
     document.querySelectorAll(".dot").forEach((dot) => {
       dot.addEventListener("click", () => showToast(`查看第 ${dot.dataset.question} 题解析`));
     });

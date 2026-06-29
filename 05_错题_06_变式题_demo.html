@@ -656,6 +656,7 @@
 <body>
   <aside class="demo-scenes" aria-label="练习场景切换">
     <span>Demo 场景</span>
+    <button class="scene-btn" data-scene="entry">入口</button>
     <button class="scene-btn" data-scene="review">复习专区</button>
     <button class="scene-btn" data-scene="flashcard">闪卡</button>
     <button class="scene-btn active" data-scene="wrong">错题</button>
@@ -700,7 +701,7 @@
           <div class="question-scroll">
             <div class="meta-row"><span>第1篇 工程经济</span><span class="page-index">1/5</span></div>
             <div class="progress-line" style="--progress: 20%"><span></span></div>
-            <div class="chips"><span class="chip">单项选择题</span><span class="chip gray">原题乱序</span></div>
+            <div class="chips"><span class="chip">单项选择题</span></div>
             <h2 class="question">某企业拟进行资金时间价值计算，关于现值与终值换算的说法，正确的是（ ）。</h2>
             <div class="options">
               <button class="option" data-option="A"><span class="option-letter">A</span><span>现值一定大于终值</span></button>
@@ -773,7 +774,7 @@
 
       <div class="bottom">
         <button class="analysis-btn" id="analysisBtn" disabled>查看解析</button>
-        <p class="hint" id="hint">未作答也可左右滑动进入变式题</p>
+        <p class="hint" id="hint"></p>
       </div>
     </main>
     <div class="toast" id="toast"></div>
@@ -825,9 +826,7 @@
       document.querySelector(".bottom").classList.toggle("is-hidden", shown);
       analysisBtn.disabled = !answered;
       analysisBtn.textContent = shown ? "已查看解析" : "查看解析";
-      hint.textContent = answered
-        ? "选择后可查看本题解析"
-        : (page.dataset.type === "wrong" ? "未作答也可左右滑动进入变式题" : "本题用于验证考点迁移应用");
+      hint.textContent = answered ? "选择后可查看本题解析" : "";
     }
 
     function updateCurrentFromScroll() {
@@ -897,16 +896,20 @@
     document.querySelectorAll(".scene-btn").forEach((button) => {
       button.addEventListener("click", () => {
         const params = `point=${pointIndex}&name=${encodeURIComponent(pointName)}`;
-        if (button.dataset.scene === "review") {
-          location.href = "03_考点推荐_demo.html";
+        const memberParam = query.get("member") ? `&member=${query.get("member")}` : "";
+        const memberQuery = query.get("member") ? `?member=${query.get("member")}` : "";
+        if (button.dataset.scene === "entry") {
+          location.href = "01_入口_会员态_demo.html";
+        } else if (button.dataset.scene === "review") {
+          location.href = `03_考点推荐_demo.html${memberQuery}`;
         } else if (button.dataset.scene === "flashcard") {
-          location.href = `04_闪卡_demo.html?${params}`;
+          location.href = `04_闪卡_demo.html?${params}${memberParam}`;
         } else if (button.dataset.scene === "wrong") {
           goToPage(0);
         } else if (button.dataset.scene === "variant") {
           goToPage(1);
         } else {
-          location.href = `07_答题报告_demo.html?${params}`;
+          location.href = `07_答题报告_demo.html?${params}${memberParam}`;
         }
       });
     });

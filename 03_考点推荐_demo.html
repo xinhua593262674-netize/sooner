@@ -93,7 +93,15 @@
       text-align: center;
     }
 
-    .scenario-btn {
+    .scene-divider {
+      height: 1px;
+      margin: 1px 0;
+      background: #edf1f7;
+    }
+
+    .scenario-btn,
+    .scene-nav-btn,
+    .member-btn {
       height: 30px;
       border: 1px solid #dfe6f2;
       border-radius: 999px;
@@ -103,10 +111,18 @@
       font-weight: 650;
     }
 
-    .scenario-btn.active {
+    .scenario-btn.active,
+    .scene-nav-btn.active,
+    .member-btn.active {
       border-color: var(--blue);
       color: var(--blue);
       background: #eef5ff;
+    }
+
+    .member-btn.free.active {
+      border-color: #f6b75b;
+      color: #9a6500;
+      background: #fff5dc;
     }
 
     header {
@@ -935,10 +951,18 @@
   </style>
 </head>
 <body>
-  <aside class="scenario-switch" aria-label="会员场景切换">
+  <aside class="scenario-switch" aria-label="Demo 场景切换">
     <span>Demo 场景</span>
-    <button class="scenario-btn active" data-scene="member">已开通</button>
-    <button class="scenario-btn" data-scene="non-member">未开通</button>
+    <button class="scene-nav-btn" data-scene="entry">入口</button>
+    <button class="scene-nav-btn active" data-scene="review">复习专区</button>
+    <button class="scene-nav-btn" data-scene="flashcard">闪卡</button>
+    <button class="scene-nav-btn" data-scene="wrong">错题</button>
+    <button class="scene-nav-btn" data-scene="variant">变式题</button>
+    <button class="scene-nav-btn" data-scene="report">复习报告</button>
+    <div class="scene-divider"></div>
+    <span>会员状态</span>
+    <button class="member-btn" data-member="vip">开通会员</button>
+    <button class="member-btn free" data-member="free">未开通会员</button>
   </aside>
 
   <div class="app">
@@ -1247,7 +1271,7 @@
     const practiceButton = document.querySelector('[data-action="practice"]');
     const practiceTip = document.querySelector('[data-role="practice-tip"]');
     const firstStatus = document.querySelector('[data-role="first-status"]');
-    let scene = "member";
+    let scene = new URLSearchParams(location.search).get("member") === "free" ? "non-member" : "member";
     let allPointsExpanded = false;
     let toastTimer;
 
@@ -1298,14 +1322,39 @@
       });
     }
 
-    document.querySelectorAll(".scenario-btn").forEach((button) => {
+    function renderMemberScene(notify = false) {
+      app.classList.toggle("non-member", scene === "non-member");
+      document.querySelectorAll(".member-btn").forEach((item) => {
+        item.classList.toggle("active", item.dataset.member === (scene === "member" ? "vip" : "free"));
+      });
+      const url = new URL(location.href);
+      url.searchParams.set("member", scene === "member" ? "vip" : "free");
+      history.replaceState(null, "", url);
+      if (notify) showToast(scene === "member" ? "已切换：开通会员场景" : "已切换：未开通会员场景");
+    }
+
+    document.querySelectorAll(".member-btn").forEach((button) => {
       button.addEventListener("click", () => {
-        scene = button.dataset.scene;
-        app.classList.toggle("non-member", scene === "non-member");
-        document.querySelectorAll(".scenario-btn").forEach((item) => {
-          item.classList.toggle("active", item === button);
-        });
-        showToast(scene === "member" ? "已切换：开通会员场景" : "已切换：未开通会员场景");
+        scene = button.dataset.member === "vip" ? "member" : "non-member";
+        renderMemberScene(true);
+      });
+    });
+
+    document.querySelectorAll(".scene-nav-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const memberParam = `member=${scene === "member" ? "vip" : "free"}`;
+        const params = `point=1&name=${encodeURIComponent("资金时间价值计算基础")}&${memberParam}`;
+        if (button.dataset.scene === "entry") {
+          location.href = "01_入口_会员态_demo.html";
+        } else if (button.dataset.scene === "flashcard") {
+          location.href = `04_闪卡_demo.html?${params}`;
+        } else if (button.dataset.scene === "wrong") {
+          location.href = `05_错题_06_变式题_demo.html?${params}`;
+        } else if (button.dataset.scene === "variant") {
+          location.href = `05_错题_06_变式题_demo.html?${params}&start=variant`;
+        } else if (button.dataset.scene === "report") {
+          location.href = `07_答题报告_demo.html?${params}`;
+        }
       });
     });
 
@@ -1421,6 +1470,7 @@
 
     syncRecommendationProgress();
     syncSubjectFromQuery();
+    renderMemberScene();
   </script>
 </body>
 </html>

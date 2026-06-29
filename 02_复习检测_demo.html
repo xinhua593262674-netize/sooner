@@ -55,7 +55,13 @@
       box-shadow: 0 10px 30px rgba(24,45,78,.12);
     }
     .scenario-switch span { color: #667085; font-size: 11px; text-align: center; }
-    .scenario-btn {
+    .scene-divider {
+      height: 1px;
+      margin: 1px 0;
+      background: #edf1f7;
+    }
+    .scenario-btn,
+    .scene-nav-btn {
       height: 31px;
       border: 1px solid #dfe6f2;
       border-radius: 999px;
@@ -64,7 +70,8 @@
       font-size: 12px;
       font-weight: 650;
     }
-    .scenario-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
+    .scenario-btn.active,
+    .scene-nav-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
     header { flex: none; background: rgba(255,255,255,.94); }
     .statusbar {
       display: flex;
@@ -144,7 +151,146 @@
       scrollbar-width: none;
     }
     main::-webkit-scrollbar { display: none; }
+    .app[data-step="report"][data-scene="empty"] main { padding-top: 8px; }
+    .app[data-step="report"][data-scene="empty"] .tip { margin: 0 0 10px; }
     .hero { margin-bottom: 14px; text-align: center; }
+    .scan-step {
+      display: none;
+      min-height: 100%;
+      padding: 38px 8px 18px;
+    }
+    .scan-card {
+      position: relative;
+      width: 100%;
+      padding: 34px 18px 20px;
+      border: 1px solid #dce8fb;
+      border-radius: 22px;
+      overflow: hidden;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(36,119,255,.18), transparent 35%),
+        linear-gradient(180deg, #fff, #f7fbff);
+      box-shadow: 0 14px 40px rgba(54, 92, 155, .10);
+    }
+    .scan-card::before {
+      position: absolute;
+      inset: -90px 38px auto;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(23,107,255,.10);
+      filter: blur(12px);
+      content: "";
+    }
+    .scan-orb {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 98px;
+      height: 98px;
+      margin: 0 auto 18px;
+      border-radius: 30px;
+      background: #eaf3ff;
+    }
+    .scan-orb::before,
+    .scan-orb::after {
+      position: absolute;
+      inset: 7px;
+      border: 2px solid rgba(23,107,255,.28);
+      border-radius: 26px;
+      animation: scanPulse 1.6s ease-in-out infinite;
+      content: "";
+    }
+    .scan-orb::after {
+      inset: -8px;
+      border-color: rgba(23,107,255,.14);
+      animation-delay: .28s;
+    }
+    .scan-core {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 24px;
+      color: #fff;
+      background: linear-gradient(145deg, #4b94ff, #1268f5);
+      box-shadow: 0 18px 34px rgba(23,107,255,.28);
+      font-size: 32px;
+      animation: scanFloat 1.8s ease-in-out infinite;
+    }
+    .scan-core::after {
+      position: absolute;
+      left: 13px;
+      right: 13px;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 0 12px rgba(255,255,255,.8);
+      animation: scanLine 1.35s ease-in-out infinite;
+      content: "";
+    }
+    .scan-card h2 {
+      position: relative;
+      margin: 0 0 8px;
+      font-size: 23px;
+      letter-spacing: -.2px;
+    }
+    .scan-card p {
+      position: relative;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .scan-progress {
+      position: relative;
+      height: 8px;
+      margin: 22px 4px 16px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #eaf0fa;
+    }
+    .scan-progress i {
+      display: block;
+      width: 48%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #5aa2ff, #1469f6);
+      animation: scanProgress 2.15s ease-in-out infinite;
+    }
+    .scan-checks {
+      position: relative;
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+      text-align: left;
+    }
+    .scan-check {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 11px;
+      border-radius: 12px;
+      color: #536176;
+      background: rgba(255,255,255,.76);
+      font-size: 12px;
+      opacity: .55;
+      transform: translateY(4px);
+      animation: checkIn 2.6s ease-in-out infinite;
+    }
+    .scan-check:nth-child(2) { animation-delay: .36s; }
+    .scan-check:nth-child(3) { animation-delay: .72s; }
+    .scan-check span {
+      display: grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+    }
     .scan-icon {
       position: relative;
       display: grid;
@@ -193,17 +339,77 @@
     }
     .card-title h3 { margin: 0; font-size: 16px; }
     .card-title span { color: var(--muted); font-size: 10px; }
-    .radar-wrap { display: grid; grid-template-columns: 190px 1fr; align-items: center; gap: 4px; }
-    .radar { width: 190px; height: 178px; overflow: visible; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .summary-item {
+      min-height: 62px;
+      padding: 9px 6px;
+      border-radius: 10px;
+      text-align: center;
+      background: linear-gradient(180deg, #f5f9ff, #fff);
+    }
+    .summary-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--blue);
+      font-size: 20px;
+      line-height: 1.1;
+    }
+    .summary-item span { color: var(--muted); font-size: 11px; }
+    .radar-wrap {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      align-items: center;
+      gap: 26px;
+    }
+    .radar { width: 150px; height: 142px; overflow: visible; }
     .radar .grid { fill: none; stroke: #dfe6f1; stroke-width: 1; }
     .radar .axis { stroke: #e7ebf3; stroke-width: 1; }
     .radar .area { fill: rgba(23,107,255,.23); stroke: #176bff; stroke-width: 2; }
     .radar circle { fill: #176bff; }
-    .radar text { fill: #68748b; font-size: 10px; }
-    .radar-score { display: grid; gap: 9px; font-size: 11px; }
-    .radar-score div { display: flex; justify-content: space-between; color: var(--muted); }
+    .radar text { fill: #68748b; font-size: 10.5px; font-weight: 600; }
+    .radar-score { display: grid; gap: 6px; min-width: 96px; font-size: 11px; }
+    .radar-score div {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      color: var(--muted);
+      line-height: 1.25;
+      white-space: nowrap;
+    }
     .radar-score strong { color: var(--ink); font-size: 12px; }
     .radar-score .weak strong { color: var(--orange); }
+    .reason-summary {
+      margin-bottom: 10px;
+      padding: 10px 11px;
+      border-radius: 10px;
+      color: #2d3b55;
+      background: #f5f8ff;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .reason-list { display: grid; gap: 8px; }
+    .reason-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: flex-start;
+      gap: 9px;
+      color: #4d5a70;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .reason-item b {
+      padding: 4px 7px;
+      border-radius: 999px;
+      color: #d85b24;
+      background: #fff0e8;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .reason-item span { padding-top: 3px; }
     .point-list { display: grid; gap: 8px; }
     .point {
       position: relative;
@@ -281,8 +487,10 @@
     }
     .secondary-link { display: block; margin: 9px auto 0; color: #718099; font-size: 11px; }
     .scene { display: none; }
-    .app[data-scene="history"] .history-scene,
-    .app[data-scene="empty"] .empty-scene { display: block; }
+    .app[data-step="scan"] .scan-step { display: block; }
+    .app[data-step="scan"] .bottom-action { display: none; }
+    .app[data-step="report"][data-scene="history"] .history-scene,
+    .app[data-step="report"][data-scene="empty"] .empty-scene { display: block; }
     .toast {
       position: absolute;
       left: 50%;
@@ -298,6 +506,27 @@
       pointer-events: none;
     }
     .toast.show { transform: translate(-50%,0); opacity: 1; }
+    @keyframes scanPulse {
+      0%, 100% { transform: scale(.92); opacity: .45; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+    @keyframes scanFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes scanLine {
+      0% { top: 16px; opacity: .15; }
+      45% { opacity: 1; }
+      100% { top: 54px; opacity: .2; }
+    }
+    @keyframes scanProgress {
+      0% { transform: translateX(-105%); }
+      70%, 100% { transform: translateX(215%); }
+    }
+    @keyframes checkIn {
+      0%, 14% { opacity: .45; transform: translateY(4px); }
+      28%, 100% { opacity: 1; transform: translateY(0); }
+    }
     @media (min-width: 430px), (min-height: 890px) { .app { border-radius: 26px; } }
     @media (max-width: 392px) {
       .app { width: 100vw; height: 100dvh; }
@@ -306,13 +535,22 @@
   </style>
 </head>
 <body>
-  <aside class="scenario-switch" aria-label="检测场景">
+  <aside class="scenario-switch" aria-label="Demo 场景切换">
+    <span>Demo 场景</span>
+    <button class="scene-nav-btn" data-scene="entry">入口</button>
+    <button class="scene-nav-btn active" data-scene="detect">学情检测</button>
+    <button class="scene-nav-btn" data-scene="review">复习专区</button>
+    <button class="scene-nav-btn" data-scene="flashcard">闪卡</button>
+    <button class="scene-nav-btn" data-scene="wrong">错题</button>
+    <button class="scene-nav-btn" data-scene="variant">变式题</button>
+    <button class="scene-nav-btn" data-scene="report">复习报告</button>
+    <div class="scene-divider"></div>
     <span>检测场景</span>
     <button class="scenario-btn active" data-scene="history">有错题数据</button>
     <button class="scenario-btn" data-scene="empty">无错题数据</button>
   </aside>
 
-  <div class="app" data-scene="history">
+  <div class="app" data-scene="history" data-step="scan">
     <header>
       <div class="statusbar">
         <span>10:18</span>
@@ -328,13 +566,29 @@
     </header>
 
     <main>
-      <section class="scene history-scene">
-        <div class="hero">
-          <div class="scan-icon">◎</div>
-          <h2>已完成你的错题分析</h2>
-          <p data-role="history-source">依据建筑实务科目全平台历史做题记录生成</p>
-          <span class="data-chip" data-role="history-count">已分析 42 道错题 · 覆盖 15 个考点</span>
+      <section class="scan-step" aria-label="正在检测">
+        <div class="scan-card">
+          <div class="scan-orb"><div class="scan-core">◎</div></div>
+          <h2>正在检测你的学情</h2>
+          <p data-role="scan-copy">正在读取累计练习数据<br/>并匹配错题、考点和可能错因</p>
+          <div class="scan-progress"><i></i></div>
+          <div class="scan-checks">
+            <div class="scan-check"><span>1</span><b data-role="scan-step-a">分析累计练习数据</b></div>
+            <div class="scan-check"><span>2</span><b>识别薄弱篇章与考点</b></div>
+            <div class="scan-check"><span>3</span><b>生成专属考点推荐报告</b></div>
+          </div>
         </div>
+      </section>
+
+      <section class="scene history-scene">
+        <section class="card">
+          <div class="card-title"><h3>累计练习数据</h3></div>
+          <div class="summary-grid">
+            <div class="summary-item"><strong data-role="total-points">15</strong><span>练习考点数</span></div>
+            <div class="summary-item"><strong data-role="total-practice">128</strong><span>做题次数</span></div>
+            <div class="summary-item"><strong data-role="total-accuracy">68%</strong><span>正确率</span></div>
+          </div>
+        </section>
 
         <section class="card">
           <div class="card-title"><h3>各篇学习表现</h3><span>正确率越低越薄弱</span></div>
@@ -354,29 +608,28 @@
         </section>
 
         <section class="card">
-          <div class="card-title"><h3>优先补强的考点</h3><span>综合错题与考点价值</span></div>
+          <div class="card-title"><h3>本科目高频错因</h3><span>常见错因参考</span></div>
+          <div class="reason-summary" data-role="reason-summary">本科目常见失分多集中在构造要求混淆、案例条件漏看和工序顺序不清，复习时建议先把规则记准，再通过题目确认会用。</div>
+          <div class="reason-list" data-role="reason-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-title"><h3>优先补强的考点</h3><span>综合分 Top10</span></div>
           <div class="point-list" data-role="weak-points"></div>
         </section>
       </section>
 
       <section class="scene empty-scene">
-        <div class="hero">
-          <div class="empty-illustration">📝</div>
-          <div class="empty-copy">
-            <h3>还没有足够的错题数据</h3>
-            <p>完成更多章节练习后，我们会结合你的错题<br/>生成更准确的薄弱考点推荐。</p>
-          </div>
-        </div>
-        <div class="tip"><span>💡</span><span>当前先依据考试频率和考点价值，为你准备少量优先考点，不用盲目刷题。</span></div>
+        <div class="tip"><span>💡</span><span>暂无错题数据，当前先依据考试频率和考点价值，为你准备少量优先考点，不用盲目刷题。</span></div>
         <section class="card">
-          <div class="card-title"><h3>建议先练这 3 个考点</h3><span>高频 · 高价值</span></div>
+          <div class="card-title"><h3>优先推荐考点</h3><span>综合分 Top10</span></div>
           <div class="point-list" data-role="priority-points"></div>
         </section>
         <section class="card">
           <div class="card-title"><h3>怎样获得个性化推荐？</h3></div>
           <div class="point-list">
-            <div class="point"><b>①</b><div><h4>完成章节练习</h4><p>系统自动积累你的做题与错题记录</p></div></div>
-            <div class="point"><b>②</b><div><h4>生成专属薄弱分析</h4><p>推荐结果会随新错题和掌握状态更新</p></div></div>
+            <div class="point"><b>①</b><div><h4>前往题库页做题</h4><p>系统会自动记录你的做题结果与错题情况</p></div></div>
+            <div class="point"><b>②</b><div><h4>生成专属考点推荐</h4><p>做题数据越充分，推荐的薄弱考点越准确</p></div></div>
           </div>
         </section>
       </section>
@@ -384,7 +637,6 @@
 
     <div class="bottom-action">
       <button class="primary" data-action="continue">查看我的考点推荐</button>
-      <button class="secondary-link" data-action="practice">先去章节精练积累数据</button>
     </div>
     <div class="toast"></div>
   </div>
@@ -395,67 +647,152 @@
     const subjectData = {
       practice: {
         name: "建筑实务", wrong: 42, covered: 15,
+        total: { points: 15, practice: 128, accuracy: "68%" },
         labels: ["建筑技术", "法规标准", "项目管理", "案例实务", "历年真题"],
         scores: [76, 64, 49, 41, 55],
+        reasonsSummary: "建筑实务常见失分多集中在构造要求混淆、案例条件漏看和工序顺序不清，复习时建议先把规则记准，再通过题目确认会用。",
+        reasons: [
+          ["构造要求混淆", "不同结构、不同场景下的构造要求容易记混。"],
+          ["案例条件漏看", "案例题条件多，容易漏掉时间、部位、主体等限制。"],
+          ["工序顺序不清", "施工流程前后关系不稳，综合题容易判断错。"]
+        ],
         weak: [
-          ["建筑构造与抗震要求", "7 道错题 · 构造要求混淆", "重点"],
-          ["混凝土结构施工技术", "5 道错题 · 工序记忆不准", "薄弱"],
-          ["施工现场安全管理", "4 道错题 · 案例判断易错", "薄弱"]
+          ["建筑构造与抗震要求", "综合分 94 · 7 道错题 · 主要错因：构造要求混淆", "重点"],
+          ["混凝土结构施工技术", "综合分 89 · 5 道错题 · 主要错因：工序顺序不清", "薄弱"],
+          ["施工现场安全管理", "综合分 86 · 4 道错题 · 主要错因：案例条件漏看", "薄弱"],
+          ["脚手架安全技术", "综合分 82 · 3 道错题 · 主要错因：搭设要求混淆", "薄弱"],
+          ["防水工程施工", "综合分 79 · 2 道错题 · 主要错因：材料适用混淆", "推荐"],
+          ["施工项目合同管理", "综合分 76 · 2 道错题 · 主要错因：责任边界不清", "推荐"],
+          ["质量验收程序", "综合分 73 · 2 道错题 · 主要错因：验收顺序不清", "推荐"],
+          ["施工进度网络计划", "综合分 70 · 1 道错题 · 主要错因：逻辑关系混淆", "推荐"],
+          ["绿色施工管理", "综合分 67 · 高频考点 · 暂无练习记录", "未练习"],
+          ["施工现场临时用电", "综合分 64 · 高频考点 · 暂无练习记录", "未练习"]
         ],
         priority: [
-          ["建筑构造与抗震要求", "第 1 篇 / 第 1 章 · 历年高频", "高频"],
-          ["混凝土结构施工技术", "第 1 篇 / 第 2 章 · 施工必考", "高频"],
-          ["施工项目合同管理", "第 3 篇 / 第 2 章 · 案例重点", "重点"]
+          ["建筑构造与抗震要求", "综合分 94 · 第 1 篇 / 第 1 章 · 历年高频", "高频"],
+          ["混凝土结构施工技术", "综合分 89 · 第 1 篇 / 第 2 章 · 施工必考", "高频"],
+          ["施工项目合同管理", "综合分 86 · 第 3 篇 / 第 2 章 · 案例重点", "重点"],
+          ["施工现场安全管理", "综合分 82 · 第 3 篇 / 第 1 章 · 高频易错", "高频"],
+          ["防水工程施工", "综合分 79 · 第 1 篇 / 第 2 章 · 常考", "高频"],
+          ["质量验收程序", "综合分 76 · 第 2 篇 / 第 1 章 · 基础重点", "重点"],
+          ["施工进度网络计划", "综合分 73 · 第 3 篇 / 第 3 章 · 计算易错", "重点"],
+          ["绿色施工管理", "综合分 70 · 第 3 篇 / 第 4 章 · 高频", "高频"],
+          ["脚手架安全技术", "综合分 67 · 第 1 篇 / 第 3 章 · 安全重点", "重点"],
+          ["临时用电安全", "综合分 64 · 第 3 篇 / 第 1 章 · 常考", "高频"]
         ]
       },
       law: {
         name: "法规", wrong: 31, covered: 11,
+        total: { points: 11, practice: 96, accuracy: "72%" },
         labels: ["基本法律", "许可制度", "合同制度", "安全法规", "质量法规"],
         scores: [81, 68, 52, 45, 63],
+        reasonsSummary: "法规常见失分多集中在责任主体、时间条件和适用范围混淆，复习时建议把主体、期限、前置条件拆开记。",
+        reasons: [
+          ["责任主体混淆", "建设单位、施工单位、监理单位的责任边界容易混。"],
+          ["时间条件记错", "许可、备案、合同相关期限容易记错或漏记。"],
+          ["适用范围误判", "没有先判断制度适用对象，直接套规则导致出错。"]
+        ],
         weak: [
-          ["建设工程合同履行", "6 道错题 · 责任边界混淆", "重点"],
-          ["安全生产责任制度", "5 道错题 · 主体责任易错", "薄弱"],
-          ["施工许可证制度", "3 道错题 · 时间条件混淆", "薄弱"]
+          ["建设工程合同履行", "综合分 93 · 6 道错题 · 主要错因：责任边界混淆", "重点"],
+          ["安全生产责任制度", "综合分 88 · 5 道错题 · 主要错因：责任主体混淆", "薄弱"],
+          ["施工许可证制度", "综合分 84 · 3 道错题 · 主要错因：时间条件记错", "薄弱"],
+          ["质量责任和义务", "综合分 81 · 3 道错题 · 主要错因：责任主体混淆", "薄弱"],
+          ["招标投标制度", "综合分 78 · 2 道错题 · 主要错因：适用范围误判", "推荐"],
+          ["劳动合同制度", "综合分 75 · 2 道错题 · 主要错因：期限混淆", "推荐"],
+          ["担保与保险制度", "综合分 72 · 2 道错题 · 主要错因：概念混淆", "推荐"],
+          ["工程纠纷解决", "综合分 69 · 1 道错题 · 主要错因：程序混淆", "推荐"],
+          ["行政处罚制度", "综合分 66 · 高频考点 · 暂无练习记录", "未练习"],
+          ["文物保护制度", "综合分 63 · 高频考点 · 暂无练习记录", "未练习"]
         ],
         priority: [
-          ["建设工程合同制度", "第 4 章 · 历年高频", "高频"],
-          ["安全生产责任制度", "第 6 章 · 高频易错", "高频"],
-          ["施工许可证制度", "第 2 章 · 基础必考", "重点"]
+          ["建设工程合同制度", "综合分 93 · 第 4 章 · 历年高频", "高频"],
+          ["安全生产责任制度", "综合分 88 · 第 6 章 · 高频易错", "高频"],
+          ["施工许可证制度", "综合分 84 · 第 2 章 · 基础必考", "重点"],
+          ["质量责任和义务", "综合分 81 · 第 7 章 · 常考", "高频"],
+          ["招标投标制度", "综合分 78 · 第 3 章 · 高频", "高频"],
+          ["劳动合同制度", "综合分 75 · 第 5 章 · 易混", "重点"],
+          ["担保与保险制度", "综合分 72 · 第 4 章 · 易错", "重点"],
+          ["工程纠纷解决", "综合分 69 · 第 8 章 · 高频", "高频"],
+          ["行政处罚制度", "综合分 66 · 第 1 章 · 常考", "高频"],
+          ["文物保护制度", "综合分 63 · 第 5 章 · 基础", "重点"]
         ]
       },
       economy: {
         name: "经济", wrong: 36, covered: 12,
+        total: { points: 12, practice: 112, accuracy: "65%" },
         labels: ["工程经济", "工程财务", "工程计价", "历年真题", "综合应用"],
         scores: [72, 61, 43, 38, 67],
+        reasonsSummary: "经济常见失分多集中在公式选择、计算步骤和指标含义混淆，复习时建议先明确公式适用场景，再做变式题迁移。",
+        reasons: [
+          ["公式选择错误", "相近公式使用场景分不清，容易套错公式。"],
+          ["计算步骤遗漏", "折现、换算、中间量处理时容易少一步。"],
+          ["指标含义混淆", "评价指标的含义和判断标准没有区分清楚。"]
+        ],
         weak: [
-          ["资金时间价值计算基础", "6 道错题 · 公式记忆不准", "重点"],
-          ["现值与终值换算", "4 道错题 · 计算公式混淆", "薄弱"],
-          ["经济效果评价指标", "5 道错题 · 指标适用混淆", "薄弱"]
+          ["资金时间价值计算基础", "综合分 96 · 6 道错题 · 主要错因：公式选择错误", "重点"],
+          ["经济效果评价指标", "综合分 91 · 5 道错题 · 主要错因：指标含义混淆", "薄弱"],
+          ["现值与终值换算", "综合分 87 · 4 道错题 · 主要错因：计算步骤遗漏", "薄弱"],
+          ["名义利率与有效利率", "综合分 83 · 3 道错题 · 主要错因：公式选择错误", "薄弱"],
+          ["盈亏平衡分析", "综合分 80 · 3 道错题 · 主要错因：变量关系混淆", "推荐"],
+          ["财务净现值计算", "综合分 77 · 2 道错题 · 主要错因：折现步骤遗漏", "推荐"],
+          ["设备更新分析", "综合分 74 · 2 道错题 · 主要错因：方案判断错误", "推荐"],
+          ["工程量清单计价", "综合分 71 · 2 道错题 · 主要错因：计价规则混淆", "推荐"],
+          ["价值工程", "综合分 68 · 高频考点 · 暂无练习记录", "未练习"],
+          ["资金成本计算", "综合分 65 · 高频考点 · 暂无练习记录", "未练习"]
         ],
         priority: [
-          ["资金时间价值计算基础", "第 1 篇 / 第 1 章 · 历年高频", "高频"],
-          ["现值与终值换算", "第 1 篇 / 第 1 章 · 公式必考", "高频"],
-          ["经济效果评价指标", "第 1 篇 / 第 2 章 · 易混考点", "重点"]
+          ["资金时间价值计算基础", "综合分 96 · 第 1 篇 / 第 1 章 · 历年高频", "高频"],
+          ["经济效果评价指标", "综合分 91 · 第 1 篇 / 第 2 章 · 易混考点", "重点"],
+          ["现值与终值换算", "综合分 87 · 第 1 篇 / 第 1 章 · 公式必考", "高频"],
+          ["名义利率与有效利率", "综合分 83 · 第 1 篇 / 第 1 章 · 高频", "高频"],
+          ["盈亏平衡分析", "综合分 80 · 第 1 篇 / 第 2 章 · 常考", "重点"],
+          ["财务净现值计算", "综合分 77 · 第 1 篇 / 第 2 章 · 计算重点", "重点"],
+          ["设备更新分析", "综合分 74 · 第 1 篇 / 第 3 章 · 高频", "高频"],
+          ["工程量清单计价", "综合分 71 · 第 3 篇 / 第 1 章 · 常考", "高频"],
+          ["价值工程", "综合分 68 · 第 1 篇 / 第 4 章 · 高频", "高频"],
+          ["资金成本计算", "综合分 65 · 第 2 篇 / 第 1 章 · 基础", "重点"]
         ]
       },
       management: {
         name: "管理", wrong: 28, covered: 10,
+        total: { points: 10, practice: 88, accuracy: "70%" },
         labels: ["组织管理", "成本管理", "进度管理", "质量管理", "合同管理"],
         scores: [70, 56, 48, 74, 42],
+        reasonsSummary: "管理常见失分多集中在流程顺序、指标计算和合同条件漏看，复习时建议先串流程，再练成本、进度类题。",
+        reasons: [
+          ["流程顺序混淆", "管理流程节点多，前后顺序容易串不起来。"],
+          ["指标计算错误", "成本、进度类指标公式和正负判断容易出错。"],
+          ["合同条件漏看", "索赔、价款调整题中关键条件容易漏读。"]
+        ],
         weak: [
-          ["施工进度计划调整", "5 道错题 · 逻辑关系混淆", "重点"],
-          ["合同价款调整", "4 道错题 · 条件判断易错", "薄弱"],
-          ["施工成本偏差分析", "3 道错题 · 指标计算混淆", "薄弱"]
+          ["施工进度计划调整", "综合分 92 · 5 道错题 · 主要错因：流程顺序混淆", "重点"],
+          ["合同价款调整", "综合分 88 · 4 道错题 · 主要错因：合同条件漏看", "薄弱"],
+          ["施工成本偏差分析", "综合分 84 · 3 道错题 · 主要错因：指标计算错误", "薄弱"],
+          ["双代号网络计划", "综合分 81 · 3 道错题 · 主要错因：逻辑关系混淆", "薄弱"],
+          ["质量管理体系", "综合分 78 · 2 道错题 · 主要错因：流程顺序混淆", "推荐"],
+          ["安全生产管理制度", "综合分 75 · 2 道错题 · 主要错因：责任主体混淆", "推荐"],
+          ["合同索赔管理", "综合分 72 · 2 道错题 · 主要错因：条件判断错误", "推荐"],
+          ["风险管理流程", "综合分 69 · 1 道错题 · 主要错因：流程顺序混淆", "推荐"],
+          ["信息管理流程", "综合分 66 · 高频考点 · 暂无练习记录", "未练习"],
+          ["项目组织结构", "综合分 63 · 高频考点 · 暂无练习记录", "未练习"]
         ],
         priority: [
-          ["施工进度计划与控制", "第 3 章 · 历年高频", "高频"],
-          ["施工成本管理", "第 2 章 · 计算必考", "高频"],
-          ["建设工程合同管理", "第 6 章 · 易错重点", "重点"]
+          ["施工进度计划与控制", "综合分 92 · 第 3 章 · 历年高频", "高频"],
+          ["建设工程合同管理", "综合分 88 · 第 6 章 · 易错重点", "重点"],
+          ["施工成本管理", "综合分 84 · 第 2 章 · 计算必考", "高频"],
+          ["双代号网络计划", "综合分 81 · 第 3 章 · 高频", "高频"],
+          ["质量管理体系", "综合分 78 · 第 4 章 · 常考", "重点"],
+          ["安全生产管理制度", "综合分 75 · 第 5 章 · 高频", "高频"],
+          ["合同索赔管理", "综合分 72 · 第 6 章 · 易错", "重点"],
+          ["风险管理流程", "综合分 69 · 第 7 章 · 常考", "高频"],
+          ["信息管理流程", "综合分 66 · 第 8 章 · 基础", "重点"],
+          ["项目组织结构", "综合分 63 · 第 1 章 · 高频", "高频"]
         ]
       }
     };
     let currentSubject = "practice";
     let timer;
+    let scanTimer;
     function showToast(text) {
       toast.textContent = text;
       toast.classList.add("show");
@@ -467,6 +804,11 @@
         `<div class="point"><b>${index + 1}</b><div><h4>${point[0]}</h4><p>${point[1]}</p></div><em>${point[2]}</em></div>`
       ).join("");
     }
+    function reasonHtml(reasons) {
+      return reasons.map((reason) =>
+        `<div class="reason-item"><b>${reason[0]}</b><span>${reason[1]}</span></div>`
+      ).join("");
+    }
     function radarPoint(score, index) {
       const angles = [-90, -18, 54, 126, 198];
       const radius = 69 * score / 100;
@@ -476,10 +818,9 @@
     function renderSubject(key) {
       currentSubject = key;
       const data = subjectData[key];
-      document.querySelector('[data-role="history-source"]').textContent =
-        `依据${data.name}科目全平台历史做题记录生成`;
-      document.querySelector('[data-role="history-count"]').textContent =
-        `已分析 ${data.wrong} 道错题 · 覆盖 ${data.covered} 个考点`;
+      document.querySelector('[data-role="total-points"]').textContent = data.total.points;
+      document.querySelector('[data-role="total-practice"]').textContent = data.total.practice;
+      document.querySelector('[data-role="total-accuracy"]').textContent = data.total.accuracy;
       document.querySelectorAll("[data-radar-label]").forEach((label, index) => {
         label.textContent = data.labels[index];
       });
@@ -493,36 +834,74 @@
         data.labels.slice(0, 4).map((label, index) =>
           `<div class="${data.scores[index] < 50 ? "weak" : ""}"><span>${label}</span><strong>${data.scores[index]}%</strong></div>`
         ).join("");
+      document.querySelector('[data-role="reason-summary"]').textContent = data.reasonsSummary;
+      document.querySelector('[data-role="reason-list"]').innerHTML = reasonHtml(data.reasons);
       document.querySelector('[data-role="weak-points"]').innerHTML = pointHtml(data.weak);
       document.querySelector('[data-role="priority-points"]').innerHTML = pointHtml(data.priority);
+    }
+    function updateBottomAction() {
+      const isHistory = app.dataset.scene === "history";
+      document.querySelector('[data-action="continue"]').textContent =
+        isHistory ? "查看我的考点推荐" : "进入复习专区";
+    }
+    function startScan() {
+      clearTimeout(scanTimer);
+      app.dataset.step = "scan";
+      document.querySelector('[data-role="scan-copy"]').innerHTML =
+        app.dataset.scene === "history"
+          ? `正在读取累计练习数据<br/>并匹配错题、考点和可能错因`
+          : `正在读取练习记录<br/>优先匹配高频、高价值考点`;
+      document.querySelector('[data-role="scan-step-a"]').textContent =
+        app.dataset.scene === "history" ? "分析累计练习数据" : "检查练习记录";
+      scanTimer = setTimeout(() => {
+        app.dataset.step = "report";
+        updateBottomAction();
+      }, 2200);
     }
     document.querySelectorAll(".subject-tab").forEach((tab) => {
       tab.addEventListener("click", () => {
         document.querySelector(".subject-tab.active")?.classList.remove("active");
         tab.classList.add("active");
         renderSubject(tab.dataset.subject);
-        showToast(`已切换至${subjectData[tab.dataset.subject].name}`);
       });
     });
     document.querySelectorAll(".scenario-btn").forEach((button) => {
       button.addEventListener("click", () => {
         app.dataset.scene = button.dataset.scene;
         document.querySelectorAll(".scenario-btn").forEach((item) => item.classList.toggle("active", item === button));
-        document.querySelector('[data-action="continue"]').textContent =
-          button.dataset.scene === "history" ? "查看我的考点推荐" : "先练这 3 个高频考点";
-        document.querySelector('[data-action="practice"]').style.display =
-          button.dataset.scene === "history" ? "none" : "block";
+        startScan();
+      });
+    });
+    document.querySelectorAll(".scene-nav-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const subject = encodeURIComponent(subjectData[currentSubject].name);
+        const params = `point=1&name=${encodeURIComponent("资金时间价值计算基础")}`;
+        if (button.dataset.scene === "entry") {
+          location.href = "01_入口_会员态_demo.html";
+        } else if (button.dataset.scene === "review") {
+          location.href = `03_考点推荐_demo.html?subject=${subject}`;
+        } else if (button.dataset.scene === "flashcard") {
+          location.href = `04_闪卡_demo.html?${params}`;
+        } else if (button.dataset.scene === "wrong") {
+          location.href = `05_错题_06_变式题_demo.html?${params}`;
+        } else if (button.dataset.scene === "variant") {
+          location.href = `05_错题_06_变式题_demo.html?${params}&start=variant`;
+        } else if (button.dataset.scene === "report") {
+          location.href = `07_答题报告_demo.html?${params}`;
+        }
       });
     });
     document.querySelector(".back").addEventListener("click", () => location.href = "01_入口_会员态_demo.html");
     document.querySelector('[data-action="continue"]').addEventListener("click", () => {
-      location.href = `03_考点推荐_demo.html?subject=${encodeURIComponent(subjectData[currentSubject].name)}`;
+      if (app.dataset.scene === "history") {
+        location.href = `03_考点推荐_demo.html?subject=${encodeURIComponent(subjectData[currentSubject].name)}`;
+      } else {
+        location.href = `03_考点推荐_demo.html?subject=${encodeURIComponent(subjectData[currentSubject].name)}&source=empty`;
+      }
     });
-    document.querySelector('[data-action="practice"]').addEventListener("click", () => {
-      location.href = "01_入口_会员态_demo.html";
-    });
-    document.querySelector('[data-action="practice"]').style.display = "none";
     renderSubject(currentSubject);
+    updateBottomAction();
+    startScan();
   </script>
 </body>
 </html>
