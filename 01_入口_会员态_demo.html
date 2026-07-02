@@ -959,16 +959,8 @@
     }
 
     body > .scenario-switch,
-    body > .app:not(.library-app) {
+    body > .library-app {
       display: none;
-    }
-
-    body.entry-position-2 > .library-app {
-      display: none;
-    }
-
-    body.entry-position-2 > .app:not(.library-app) {
-      display: flex;
     }
 
     .library-app {
@@ -1432,19 +1424,14 @@
   <aside class="demo-scenes" aria-label="Demo 场景切换">
     <span>Demo 场景</span>
     <button class="demo-nav-btn active" data-scene="entry">入口</button>
-    <button class="demo-nav-btn" data-scene="detect">学情检测</button>
     <button class="demo-nav-btn" data-scene="review">复习专区</button>
-    <button class="demo-nav-btn" data-scene="flashcard">闪卡</button>
-    <button class="demo-nav-btn" data-scene="wrong">错题</button>
-    <button class="demo-nav-btn" data-scene="variant">变式题</button>
+    <button class="demo-nav-btn" data-scene="flashcard">背诵闪卡</button>
+    <button class="demo-nav-btn" data-scene="wrong">考点精练</button>
+    <button class="demo-nav-btn" data-scene="variant">举一反三</button>
     <button class="demo-nav-btn" data-scene="report">复习报告</button>
-    <div class="demo-divider"></div>
-    <span>入口位置</span>
-    <button class="demo-nav-btn active" data-entry-position="1">入口1</button>
-    <button class="demo-nav-btn" data-entry-position="2">入口2</button>
   </aside>
 
-  <div class="app chapter-mode">
+  <div class="app">
     <header>
       <div class="statusbar">
         <span>11:55</span>
@@ -1662,7 +1649,7 @@
     }
 
     document.querySelector('[data-action="enter"]').addEventListener("click", () => {
-      location.href = "02_复习检测_demo.html";
+      location.href = "03_考点推荐_demo.html";
     });
 
     function setScene(scene, notify = false) {
@@ -1690,39 +1677,10 @@
       button.addEventListener("click", () => setScene(button.dataset.scene, true));
     });
 
-    function setEntryPosition(position, notify = false) {
-      document.body.classList.toggle("entry-position-2", position === "2");
-      document.querySelectorAll("[data-entry-position]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.entryPosition === position);
-      });
-      if (position === "2") {
-        setScene("wrong");
-      }
-      if (notify) {
-        const message = position === "2"
-          ? "已切换：入口2，错题集上方"
-          : "已切换：入口1，章节精练下方";
-        const libraryToast = document.querySelector(".library-toast");
-        if (position === "1" && libraryToast) {
-          libraryToast.textContent = message;
-          libraryToast.classList.add("show");
-          setTimeout(() => libraryToast.classList.remove("show"), 1200);
-        } else {
-          showToast(message);
-        }
-      }
-    }
-
-    document.querySelectorAll("[data-entry-position]").forEach((button) => {
-      button.addEventListener("click", () => setEntryPosition(button.dataset.entryPosition, true));
-    });
-
     document.querySelectorAll(".demo-nav-btn").forEach((button) => {
       button.addEventListener("click", () => {
         const params = `point=1&name=${encodeURIComponent("资金时间价值计算基础")}`;
-        if (button.dataset.scene === "detect") {
-          location.href = "02_复习检测_demo.html";
-        } else if (button.dataset.scene === "review") {
+        if (button.dataset.scene === "review") {
           location.href = "03_考点推荐_demo.html";
         } else if (button.dataset.scene === "flashcard") {
           location.href = `04_闪卡_demo.html?${params}`;
@@ -1736,8 +1694,7 @@
       });
     });
 
-    setScene("chapter");
-    setEntryPosition(new URLSearchParams(location.search).get("entry") === "2" ? "2" : "1");
+    setScene("wrong");
 
     document.querySelector(".back").addEventListener("click", () => showToast("返回上一页"));
     document.querySelector(".export-btn").addEventListener("click", () => showToast("导出错题文档"));
@@ -1751,7 +1708,7 @@
     });
 
     document.querySelector('[data-library-action="review"]').addEventListener("click", () => {
-      location.href = "02_复习检测_demo.html";
+      location.href = "03_考点推荐_demo.html";
     });
 
     document.querySelector('[data-library-action="chapter"]').addEventListener("click", () => {

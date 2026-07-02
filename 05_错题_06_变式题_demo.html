@@ -240,12 +240,12 @@
 
     .steps {
       display: grid;
-      grid-template-columns: 1fr 34px 1fr 34px 1fr;
+      grid-template-columns: minmax(88px, 1fr) 18px minmax(88px, 1fr) 18px minmax(88px, 1fr);
       align-items: center;
       height: 61px;
-      padding: 0 28px;
+      padding: 0 16px;
       color: #8e96a5;
-      font-size: 15px;
+      font-size: 13px;
     }
 
     .step {
@@ -253,7 +253,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
       height: 100%;
       white-space: nowrap;
     }
@@ -314,7 +314,10 @@
       content: "";
     }
 
-    .connector { height: 1px; background: #dce1ea; }
+    .connector {
+      height: 1px;
+      background: #dce1ea;
+    }
 
     .stage {
       flex: 1;
@@ -658,9 +661,9 @@
     <span>Demo 场景</span>
     <button class="scene-btn" data-scene="entry">入口</button>
     <button class="scene-btn" data-scene="review">复习专区</button>
-    <button class="scene-btn" data-scene="flashcard">闪卡</button>
-    <button class="scene-btn active" data-scene="wrong">错题</button>
-    <button class="scene-btn" data-scene="variant">变式题</button>
+    <button class="scene-btn" data-scene="flashcard">背诵闪卡</button>
+    <button class="scene-btn active" data-scene="wrong">考点精练</button>
+    <button class="scene-btn" data-scene="variant">举一反三</button>
     <button class="scene-btn" data-scene="report">复习报告</button>
   </aside>
 
@@ -687,11 +690,11 @@
         <button class="icon-btn more" aria-label="更多">…</button>
       </div>
       <nav class="steps" aria-label="复习进度">
-        <div class="step done"><span class="step-dot">1</span><span>闪卡</span></div>
+        <div class="step done"><span class="step-dot">1</span><span>背诵闪卡</span></div>
         <span class="connector"></span>
-        <div class="step active" data-step="wrong"><span class="step-dot">2</span><span>错题</span></div>
+        <div class="step active" data-step="wrong"><span class="step-dot">2</span><span>考点精练</span></div>
         <span class="connector"></span>
-        <div class="step" data-step="variant"><span class="step-dot lock">3</span><span>变式题</span></div>
+        <div class="step" data-step="variant"><span class="step-dot lock">3</span><span>举一反三</span></div>
       </nav>
     </header>
 

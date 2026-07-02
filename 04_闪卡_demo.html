@@ -224,12 +224,12 @@
 
     .steps {
       display: grid;
-      grid-template-columns: 1fr 30px 1fr 30px 1fr;
+      grid-template-columns: minmax(88px, 1fr) 18px minmax(88px, 1fr) 18px minmax(88px, 1fr);
       align-items: center;
       height: 58px;
-      padding: 0 25px;
+      padding: 0 16px;
       color: #a5abb7;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .step {
@@ -237,7 +237,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
+      gap: 5px;
       height: 100%;
       white-space: nowrap;
     }
@@ -298,7 +298,7 @@
       position: relative;
       flex: 1;
       min-height: 0;
-      padding: 10px 0 max(14px, env(safe-area-inset-bottom));
+      padding: 10px 0 max(10px, env(safe-area-inset-bottom));
       overflow: hidden;
       background:
         radial-gradient(circle at 50% 22%, rgba(124, 180, 255, .2), transparent 17rem),
@@ -315,8 +315,8 @@
 
     .deck {
       position: relative;
-      height: calc(100% - 145px);
-      min-height: 455px;
+      height: calc(100% - 58px);
+      min-height: 585px;
       perspective: 1200px;
     }
 
@@ -344,12 +344,42 @@
 
     .flashcard.flipped { transform: rotateY(180deg); }
 
+    .card-arrow {
+      position: absolute;
+      top: 50%;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 48px;
+      border: 1px solid rgba(223, 230, 242, .95);
+      border-radius: 18px;
+      color: var(--blue);
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 6px 18px rgba(35, 75, 128, .1);
+      transform: translateY(-50%);
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .card-arrow.prev { left: 4px; }
+    .card-arrow.next { right: 4px; }
+    .card-arrow:disabled {
+      color: #b8c2d1;
+      background: rgba(247, 249, 252, .88);
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: translateY(-50%);
+    }
+
+    .card-arrow:active:not(:disabled) { transform: translateY(-50%) scale(.96); }
+
     .card-face {
       position: absolute;
       inset: 0;
       display: flex;
       flex-direction: column;
-      padding: 18px 18px 14px;
+      padding: 22px 20px 18px;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, .9);
       border-radius: 22px;
@@ -388,31 +418,9 @@
       stroke: #f5af16;
     }
 
-    .ai-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 22px;
-      color: #78a2e8;
-      font-size: 12px;
-    }
-
-    .ai-icon {
-      display: grid;
-      place-items: center;
-      width: 20px;
-      height: 20px;
-      border: 1.5px solid #91b6ff;
-      border-radius: 4px;
-      color: #437ee6;
-      font-size: 10px;
-      font-weight: 750;
-      box-shadow: inset 0 0 0 2px #e5eeff;
-    }
-
     .question {
-      margin: 16px 0 19px;
-      font-size: 17px;
+      margin: 24px 0 22px;
+      font-size: 18px;
       line-height: 1.65;
       font-weight: 670;
       letter-spacing: .2px;
@@ -426,19 +434,19 @@
     .answer {
       flex: 1;
       min-height: 0;
-      padding-top: 25px;
+      padding-top: 28px;
       overflow-y: auto;
       scrollbar-width: none;
-      font-size: 14px;
-      line-height: 1.95;
+      font-size: 15px;
+      line-height: 2.05;
     }
 
     .answer::-webkit-scrollbar { display: none; }
 
     .answer h2 {
-      margin: 0 0 14px;
+      margin: 0 0 18px;
       color: var(--blue);
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 650;
     }
 
@@ -485,95 +493,8 @@
       display: grid;
     }
 
-    .feedback {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 42px;
-      margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px solid var(--line);
-      color: #8b94a2;
-      font-size: 11px;
-    }
-
-    .feedback-actions {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-    }
-
-    .feedback-actions button {
-      display: grid;
-      place-items: center;
-      width: 29px;
-      height: 29px;
-      border-radius: 50%;
-      color: #747d8a;
-      font-size: 19px;
-    }
-
-    .feedback-actions button.active {
-      color: var(--blue);
-      background: #edf5ff;
-    }
-
-    .feedback-separator {
-      width: 1px;
-      height: 18px;
-      background: var(--line);
-    }
-
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      padding: 17px 20px 0;
-    }
-
-    .actions.single {
-      grid-template-columns: 1fr;
-    }
-
-    .actions[hidden] {
-      display: none;
-    }
-
-    .memory-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      height: 58px;
-      border: 1px solid #e1e6ed;
-      border-radius: 29px;
-      background: rgba(255, 255, 255, .98);
-      box-shadow: 0 5px 15px rgba(35, 75, 128, .06);
-      font-size: 17px;
-      font-weight: 660;
-    }
-
-    .memory-btn span { font-size: 25px; }
-
-    .primary-action {
-      height: 58px;
-      border-radius: 29px;
-      color: #fff;
-      background: linear-gradient(135deg, #3684ff, #2975f2);
-      box-shadow: 0 9px 20px rgba(33, 120, 255, .2);
-      font-size: 17px;
-      font-weight: 680;
-    }
-
-    .primary-action.light {
-      border: 1px solid #e1e6ed;
-      color: var(--ink);
-      background: rgba(255, 255, 255, .98);
-      box-shadow: 0 5px 15px rgba(35, 75, 128, .06);
-    }
-
     .tip {
-      margin: 15px 0 0;
+      margin: 8px 0 0;
       color: #8b93a1;
       font-size: 12px;
       text-align: center;
@@ -582,7 +503,7 @@
     .home-indicator {
       width: 122px;
       height: 5px;
-      margin: 17px auto 0;
+      margin: 10px auto 0;
       border-radius: 999px;
       background: #050505;
     }
@@ -672,7 +593,7 @@
 
     @media (min-width: 393px) and (max-height: 851px) {
       .app { width: 393px; height: 100dvh; border-radius: 0; }
-      .deck { min-height: 420px; }
+      .deck { min-height: 535px; }
     }
   </style>
 </head>
@@ -681,9 +602,9 @@
     <span>Demo 场景</span>
     <button class="scene-btn" data-scene="entry">入口</button>
     <button class="scene-btn" data-scene="review">复习专区</button>
-    <button class="scene-btn active" data-scene="flashcard">闪卡</button>
-    <button class="scene-btn" data-scene="wrong">错题</button>
-    <button class="scene-btn" data-scene="variant">变式题</button>
+    <button class="scene-btn active" data-scene="flashcard">背诵闪卡</button>
+    <button class="scene-btn" data-scene="wrong">考点精练</button>
+    <button class="scene-btn" data-scene="variant">举一反三</button>
     <button class="scene-btn" data-scene="report">复习报告</button>
   </aside>
 
@@ -705,11 +626,11 @@
       </div>
 
       <nav class="steps" aria-label="复习进度">
-        <div class="step active"><span class="step-number">1</span><span>闪卡</span></div>
+        <div class="step active"><span class="step-number">1</span><span>背诵闪卡</span></div>
         <span class="connector"></span>
-        <div class="step"><span class="lock"></span><span>2 错题</span></div>
+        <div class="step"><span class="lock"></span><span>2 考点精练</span></div>
         <span class="connector"></span>
-        <div class="step"><span class="lock"></span><span>3 变式题</span></div>
+        <div class="step"><span class="lock"></span><span>3 举一反三</span></div>
       </nav>
     </header>
 
@@ -717,6 +638,7 @@
       <div class="page-progress"><span id="progress">1/2</span></div>
 
       <section class="deck" aria-label="知识点闪卡">
+        <button class="card-arrow prev" data-action="prev-card" aria-label="上一张闪卡">‹</button>
         <div class="flashcard flipped" id="flashcard">
           <article class="card-face card-front">
             <div class="card-head">
@@ -725,17 +647,8 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.5 6.3-.9L12 2.8Z"/></svg>
               </button>
             </div>
-            <div class="ai-label"><span class="ai-icon">AI</span><span>知识点闪卡</span></div>
             <h2 class="question">资金时间价值计算中，现值与终值换算的核心公式是什么？</h2>
             <div class="divider"></div>
-            <div class="flip-hint">
-              <div>
-                <span>👆</span>
-                <strong>点击闪卡查看答案</strong>
-                <small>先在脑中回忆，再核对知识点</small>
-              </div>
-            </div>
-            <div class="recall-hint">点击空白处显示答案</div>
           </article>
 
           <article class="card-face card-back">
@@ -745,7 +658,6 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.8 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.5 6.3-.9L12 2.8Z"/></svg>
               </button>
             </div>
-            <div class="ai-label"><span class="ai-icon">AI</span><span>知识点闪卡</span></div>
             <h2 class="question">资金时间价值计算中，现值与终值换算的核心公式是什么？</h2>
             <div class="divider"></div>
             <div class="answer">
@@ -755,31 +667,12 @@
               <p>现值公式：<strong>P=F/(1+i)^n</strong></p>
               <p>其中，<strong>利率 i</strong> 为资金的时间价值率，<strong>期数 n</strong> 为计算的时间长度。</p>
             </div>
-            <div class="feedback">
-              <span>以上内容由 AI 生成，评价一下吧！</span>
-              <span class="feedback-actions">
-                <button data-feedback="like" aria-label="内容有帮助">👍</button>
-                <i class="feedback-separator"></i>
-                <button data-feedback="dislike" aria-label="内容需改进">👎</button>
-              </span>
-            </div>
           </article>
         </div>
+        <button class="card-arrow next" data-action="next-card" aria-label="下一张闪卡">›</button>
       </section>
 
-      <div class="actions single" id="learn-actions">
-        <button class="primary-action light" data-action="start-recall">我记好了，开始背诵</button>
-      </div>
-
-      <div class="actions single" id="recall-actions" hidden>
-        <button class="primary-action" data-action="show-answer">显示答案</button>
-      </div>
-
-      <div class="actions" id="result-actions" hidden>
-        <button class="memory-btn" data-result="repeat"><span>🤔</span>再复习</button>
-        <button class="memory-btn" data-result="remember"><span>😇</span>记住了</button>
-      </div>
-      <p class="tip">完成 2 张闪卡后进入错题再练</p>
+      <p class="tip">阅读闪卡内容，快速补齐本考点关键知识</p>
       <div class="home-indicator"></div>
     </main>
 
@@ -873,11 +766,8 @@
     const flashcard = document.querySelector("#flashcard");
     const toast = document.querySelector(".toast");
     const completion = document.querySelector(".completion");
-    const learnActions = document.querySelector("#learn-actions");
-    const recallActions = document.querySelector("#recall-actions");
-    const resultActions = document.querySelector("#result-actions");
     let current = 0;
-    let phase = "preview-question";
+    let phase = "evaluate";
     let toastTimer;
 
     function showToast(message) {
@@ -890,11 +780,7 @@
     function setPhase(nextPhase) {
       phase = nextPhase;
       flashcard.dataset.phase = phase;
-      const showAnswer = phase === "preview-answer" || phase === "evaluate";
-      flashcard.classList.toggle("flipped", showAnswer);
-      learnActions.hidden = phase !== "preview-question" && phase !== "preview-answer";
-      recallActions.hidden = phase !== "recall";
-      resultActions.hidden = phase !== "evaluate";
+      flashcard.classList.add("flipped");
     }
 
     function renderCard() {
@@ -904,29 +790,22 @@
       document.querySelectorAll(".card-index").forEach((node) => node.textContent = index);
       document.querySelectorAll(".question").forEach((node) => node.textContent = card.question);
       document.querySelector(".answer").innerHTML = card.answer;
+      document.querySelector('[data-action="prev-card"]').disabled = current === 0;
+      document.querySelector('[data-action="next-card"]').disabled = false;
+      document.querySelector('[data-action="next-card"]').setAttribute(
+        "aria-label",
+        current === cards.length - 1 ? "进入错题练习" : "下一张闪卡"
+      );
       document.querySelectorAll(".favorite").forEach((button) => button.classList.remove("active"));
-      document.querySelectorAll("[data-feedback]").forEach((button) => button.classList.remove("active"));
-      setPhase("preview-question");
+      setPhase("evaluate");
     }
 
-    document.querySelector('[data-action="start-recall"]').addEventListener("click", () => {
-      setPhase("recall");
-    });
-
-    document.querySelector('[data-action="show-answer"]').addEventListener("click", () => {
-      setPhase("evaluate");
-    });
-
     document.querySelector(".card-front").addEventListener("click", (event) => {
-      if (phase === "preview-question" && !event.target.closest(".favorite")) {
-        setPhase("preview-answer");
-      }
+      if (!event.target.closest(".favorite")) setPhase("evaluate");
     });
 
     document.querySelector(".card-back").addEventListener("click", (event) => {
-      if (phase === "preview-answer" && !event.target.closest("button")) {
-        setPhase("preview-question");
-      }
+      if (!event.target.closest("button")) setPhase("evaluate");
     });
 
     document.querySelectorAll(".favorite").forEach((button) => {
@@ -938,43 +817,35 @@
       });
     });
 
-    document.querySelectorAll("[data-feedback]").forEach((button) => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll("[data-feedback]").forEach((item) => item.classList.remove("active"));
-        button.classList.add("active");
-        showToast(button.dataset.feedback === "like" ? "感谢你的认可" : "已记录，将继续优化");
-      });
-    });
-
-    document.querySelectorAll("[data-result]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const remembered = button.dataset.result === "remember";
-
-        if (!remembered) {
-          setPhase("preview-question");
-          showToast("已保留当前闪卡，再复习一次");
-          return;
-        }
-
-        if (current < cards.length - 1) {
-          current += 1;
-          flashcard.animate(
-            [{ transform: "translateX(0)", opacity: 1 }, { transform: "translateX(-45px)", opacity: 0 }],
-            { duration: 180, easing: "ease-in" }
-          ).finished.then(() => renderCard());
-          showToast("已标记为记住，进入下一张");
-        } else {
-          completion.classList.add("show");
-        }
-      });
-    });
-
     document.querySelector(".back").addEventListener("click", () => history.back());
     document.querySelector(".close").addEventListener("click", () => showToast("已保存当前复习进度"));
-    document.querySelector(".continue-btn").addEventListener("click", () => {
+    function goWrongPractice() {
+      const memberParam = query.get("member") ? `&member=${query.get("member")}` : "";
       location.href =
-        `05_错题_06_变式题_demo.html?point=${pointIndex}&name=${encodeURIComponent(pointName)}`;
+        `05_错题_06_变式题_demo.html?point=${pointIndex}&name=${encodeURIComponent(pointName)}${memberParam}`;
+    }
+
+    function switchCard(direction) {
+      const next = current + direction;
+      if (next < 0 || next >= cards.length) return;
+      current = next;
+      const offset = direction > 0 ? -45 : 45;
+      flashcard.animate(
+        [{ transform: "translateX(0)", opacity: 1 }, { transform: `translateX(${offset}px)`, opacity: 0 }],
+        { duration: 180, easing: "ease-in" }
+      ).finished.then(() => renderCard());
+    }
+
+    document.querySelector('[data-action="prev-card"]').addEventListener("click", () => switchCard(-1));
+    document.querySelector('[data-action="next-card"]').addEventListener("click", () => {
+      if (current === cards.length - 1) {
+        goWrongPractice();
+        return;
+      }
+      switchCard(1);
     });
+
+    document.querySelector(".continue-btn").addEventListener("click", goWrongPractice);
 
     renderCard();
   </script>

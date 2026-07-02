@@ -591,6 +591,12 @@
       background: #f5f9ff;
     }
 
+    .tag.green {
+      border-color: #9fe3bc;
+      color: #16a05c;
+      background: #f0fff6;
+    }
+
     .lock-mark {
       display: none;
       align-items: center;
@@ -955,9 +961,9 @@
     <span>Demo 场景</span>
     <button class="scene-nav-btn" data-scene="entry">入口</button>
     <button class="scene-nav-btn active" data-scene="review">复习专区</button>
-    <button class="scene-nav-btn" data-scene="flashcard">闪卡</button>
-    <button class="scene-nav-btn" data-scene="wrong">错题</button>
-    <button class="scene-nav-btn" data-scene="variant">变式题</button>
+    <button class="scene-nav-btn" data-scene="flashcard">背诵闪卡</button>
+    <button class="scene-nav-btn" data-scene="wrong">考点精练</button>
+    <button class="scene-nav-btn" data-scene="variant">举一反三</button>
     <button class="scene-nav-btn" data-scene="report">复习报告</button>
     <div class="scene-divider"></div>
     <span>会员状态</span>
@@ -1067,6 +1073,7 @@
         <button class="filter" data-filter="推荐">推荐</button>
         <button class="filter" data-filter="建议重练">建议重练</button>
         <button class="filter" data-filter="未练习">未练习</button>
+        <button class="filter" data-filter="已掌握">已掌握</button>
       </nav>
 
       <section class="outline-card">
@@ -1117,13 +1124,13 @@
                 <span class="row-chevron"></span>
               </button>
 
-              <button class="point-row" data-action="point" data-status="未练习">
+              <button class="point-row" data-action="point" data-status="已掌握">
                 <span class="point-number">4</span>
                 <span class="point-copy">
                   <h4>等值计算应用</h4>
-                  <p>2 道错题&nbsp;&nbsp; | &nbsp;&nbsp;等值转换错误</p>
+                  <p>已完成复习&nbsp;&nbsp; | &nbsp;&nbsp;正确率 86%</p>
                 </span>
-                <span class="tag blue">未练习</span>
+                <span class="tag green">已掌握</span>
                 <span class="row-chevron"></span>
               </button>
 
@@ -1157,13 +1164,13 @@
                 <span class="row-chevron"></span>
               </button>
 
-              <button class="point-row is-extra" data-action="point" data-status="未练习">
+              <button class="point-row is-extra" data-action="point" data-status="已掌握">
                 <span class="point-number">8</span>
                 <span class="point-copy">
                   <h4>资金时间价值综合应用</h4>
-                  <p>2 道错题&nbsp;&nbsp; | &nbsp;&nbsp;综合计算薄弱</p>
+                  <p>已完成复习&nbsp;&nbsp; | &nbsp;&nbsp;正确率 90%</p>
                 </span>
-                <span class="tag blue">未练习</span>
+                <span class="tag green">已掌握</span>
                 <span class="row-chevron"></span>
               </button>
 
