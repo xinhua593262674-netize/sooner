@@ -88,13 +88,20 @@
       background: #edf1f7;
     }
     .scene-btn,
-    .member-btn { height: 30px; border: 1px solid #dfe6f2; border-radius: 999px; color: #667085; background: #fff; font-size: 12px; font-weight: 650; }
+    .member-btn,
+    .status-btn { height: 30px; border: 1px solid #dfe6f2; border-radius: 999px; color: #667085; background: #fff; font-size: 12px; font-weight: 650; }
     .scene-btn.active,
-    .member-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
+    .member-btn.active,
+    .status-btn.active { border-color: var(--blue); color: var(--blue); background: #eef5ff; }
     .member-btn.free.active {
       border-color: #f6b75b;
       color: #9a6500;
       background: #fff5dc;
+    }
+    .status-btn.retry.active {
+      border-color: #ffb18d;
+      color: #f05a25;
+      background: #fff4ed;
     }
 
     .statusbar {
@@ -362,6 +369,18 @@
       font-size: 14px;
       font-weight: 650;
       text-align: center;
+    }
+
+    .conclusion strong,
+    .conclusion span {
+      display: block;
+    }
+
+    .conclusion span {
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      opacity: .82;
     }
 
     .app.mastered .conclusion {
@@ -705,6 +724,10 @@
     <span>会员状态</span>
     <button class="member-btn" data-member="vip">开通会员</button>
     <button class="member-btn free" data-member="free">未开通会员</button>
+    <div class="scene-divider"></div>
+    <span>报告状态</span>
+    <button class="status-btn retry" data-report-state="retry">建议重练</button>
+    <button class="status-btn" data-report-state="mastered">已掌握</button>
   </aside>
 
   <div class="app">
@@ -747,7 +770,10 @@
           </div>
         </div>
 
-        <div class="conclusion" data-field="conclusion">建议重新练习本考点</div>
+        <div class="conclusion" data-field="conclusion">
+          <strong>建议重新练习本考点</strong>
+          <span>原因：本次复习正确率低于 80%</span>
+        </div>
       </section>
 
       <section class="detail-card">
@@ -831,7 +857,7 @@
         wrongCount: "2",
         wrongDots: ["1", "2"],
         rightDots: [],
-        conclusion: "建议重新练习本考点",
+        conclusion: "<strong>建议重新练习本考点</strong><span>原因：本次复习正确率低于 80%</span>",
         retryLabel: "重新练习本考点",
         nextLabel: "练习下一个考点",
         retryToast: "重新开始本考点练习",
@@ -845,7 +871,7 @@
         wrongCount: "0",
         wrongDots: [],
         rightDots: ["1", "2", "3", "4", "5"],
-        conclusion: "本考点已掌握",
+        conclusion: "<strong>本考点已掌握</strong><span>本次复习正确率达到 80%及以上</span>",
         retryLabel: "重新练习本考点",
         nextLabel: "练习下一个考点",
         retryToast: "再次巩固本考点",
@@ -877,11 +903,14 @@
       document.querySelector('[data-field="rate"]').textContent = data.rate;
       document.querySelector('[data-field="rightCount"]').textContent = data.rightCount;
       document.querySelector('[data-field="wrongCount"]').textContent = data.wrongCount;
-      document.querySelector('[data-field="conclusion"]').textContent = data.conclusion;
+      document.querySelector('[data-field="conclusion"]').innerHTML = data.conclusion;
       document.querySelector('[data-action="retry"]').textContent = data.retryLabel;
       document.querySelector('[data-action="next"]').textContent = data.nextLabel;
       document.querySelector('[data-action="next"]').classList.toggle("locked", !isMember);
       renderMemberScene();
+      document.querySelectorAll(".status-btn").forEach((button) => {
+        button.classList.toggle("active", button.dataset.reportState === name);
+      });
 
       dots.forEach((dot) => {
         dot.classList.toggle("wrong", data.wrongDots.includes(dot.dataset.question));
@@ -922,6 +951,19 @@
         url.searchParams.set("member", isMember ? "vip" : "free");
         history.replaceState(null, "", url);
         renderMemberScene();
+      });
+    });
+    document.querySelectorAll(".status-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const state = button.dataset.reportState;
+        const url = new URL(location.href);
+        if (state === "mastered") {
+          url.searchParams.set("state", "mastered");
+        } else {
+          url.searchParams.delete("state");
+        }
+        history.replaceState(null, "", url);
+        setState(state);
       });
     });
     document.querySelector('[data-action="retry"]').addEventListener("click", () => showToast(states[currentState].retryToast));
